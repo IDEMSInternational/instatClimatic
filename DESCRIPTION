@@ -1,13 +1,48 @@
 Package: instatClimatic
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Title: A set of climatic functions used in R-Instat
+Version: 0.2.0
+Authors@R: c(
+    person("Danny", "Parsons", , role = "aut"),
+    person("Lily", "Clements", , "lily@idems.international", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8864-0552")),
+    person("Antoine", "Ntalumeso", , role = "aut"),
+    person("Stephen", "Lloyd", , role = "aut"))
+Description: This package contains a set of climatic functions used in R-Instat. This includes functions written specifically for R-Instat, as well functions written elsewhere that are modified for use in R-Instat.
 License: LGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
-    magrittr
+    climdex.pcic,
+    colorRamps,
+    data.table,
+    distillery,
+    dplyr,
+    extRemes,
+    fields,
+    forcats,
+    ggplot2,
+    lubridate,
+    magrittr,
+    maps,
+    methods,
+    ncdf4,
+    ncdf4.helpers,
+    openair,
+    patchwork,
+    PCICt,
+    plyr,
+    purrr,
+    raster,
+    reshape2,
+    rlang,
+    sf,
+    sp,
+    stringr,
+    texmex,
+    tibble,
+    tidyr,
+    tidyselect,
+    zoo
+Remotes:
+    pacificclimate/climdex.pcic
