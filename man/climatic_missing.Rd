@@ -33,17 +33,5 @@ A data frame containing the summary of missing data, including the start and end
 This function calculates the summary of missing data in climatic variables for different stations and elements within a specified time period. It provides information on the start and end dates of missing data, the total number of missing values, and the percentage of missing values for each station and element. Additionally, it counts the number of complete years (without any missing values) for each station and element.
 }
 \examples{
-# Example 1: Calculate missing data summary for all elements and stations
-#summary_data <- climatic_missing(data = climatic_data, date = "Date")
-
-# Example 2: Calculate missing data summary for specific elements and stations
-#summary_data <- climatic_missing(data = climatic_data, date = "Date", elements = c("Temperature", "Precipitation"), stations = c("Station1", "Station2"))
-
-# Example 3: Calculate missing data summary with custom start and end dates
-#summary_data <- climatic_missing(data = climatic_data, date = "Date", start = FALSE, end = TRUE)
-
-# Example 4: Calculate missing data summary without including station information
-#summary_data <- climatic_missing(data = climatic_data, date = "Date", stations = NULL)
-
-
+# TODO
 }

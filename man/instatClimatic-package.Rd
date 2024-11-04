@@ -4,12 +4,19 @@
 \name{instatClimatic-package}
 \alias{instatClimatic}
 \alias{instatClimatic-package}
-\title{instatClimatic: What the Package Does (One Line, Title Case)}
+\title{instatClimatic: A set of climatic functions used in R-Instat}
 \description{
-What the package does (one paragraph).
+This package contains a set of climatic functions used in R-Instat. This includes functions written specifically for R-Instat, as well functions written elsewhere that are modified for use in R-Instat.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Lily Clements \email{lily@idems.international} (\href{https://orcid.org/0000-0001-8864-0552}{ORCID})
+
+Authors:
+\itemize{
+  \item Danny Parsons
+  \item Antoine Ntalumeso
+  \item Stephen Lloyd
+}
 
 }
 \keyword{internal}
