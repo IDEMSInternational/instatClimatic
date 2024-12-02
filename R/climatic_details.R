@@ -5,8 +5,8 @@
 #' 
 #' @param data A dataset containing climatic data.
 #' @param date The date variable in the dataset.
-#' @param elements A character vector specifying the climatic elements to analyze.
-#' @param stations A character vector specifying the stations to analyze.
+#' @param elements A character vector specifying the climatic elements to analyse.
+#' @param stations A character vector specifying the stations to analyse.
 #' @param order A logical value indicating whether the resulting tables should be ordered.
 #' @param day A logical value indicating whether to include information at the day level.
 #' @param month A logical value indicating whether to include information at the month level.
@@ -29,9 +29,9 @@
 #' #                 level = TRUE)
 
 climatic_details <- function(data, date, elements = ..., stations,
-                             order = FALSE,
-                             day = TRUE,
-                             month = FALSE,
+                             order = TRUE,
+                             day = FALSE,
+                             month = TRUE,
                              year = FALSE, level = FALSE){
   
   

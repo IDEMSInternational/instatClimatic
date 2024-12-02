@@ -41,8 +41,7 @@ convert_to_character_matrix <- function(data, format_decimal_places = TRUE, deci
         #which are recognised oddly by the R.Net
         out[, i] <- as.character(data[[i]])
       } else {
-        out[, i] <-
-          format(data[[i]], digits = decimal_places[i], scientific = is_scientific[i])
+        out[,i] <- format(data[[i]], digits = decimal_places[i], scientific = is_scientific[i])
       }
       if (!is.null(na_display)) {
         out[is.na(data[[i]]), i] <- na_display

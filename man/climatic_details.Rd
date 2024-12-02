@@ -9,9 +9,9 @@ climatic_details(
   date,
   elements = ...,
   stations,
-  order = FALSE,
-  day = TRUE,
-  month = FALSE,
+  order = TRUE,
+  day = FALSE,
+  month = TRUE,
   year = FALSE,
   level = FALSE
 )
@@ -21,9 +21,9 @@ climatic_details(
 
 \item{date}{The date variable in the dataset.}
 
-\item{elements}{A character vector specifying the climatic elements to analyze.}
+\item{elements}{A character vector specifying the climatic elements to analyse.}
 
-\item{stations}{A character vector specifying the stations to analyze.}
+\item{stations}{A character vector specifying the stations to analyse.}
 
 \item{order}{A logical value indicating whether the resulting tables should be ordered.}
 
