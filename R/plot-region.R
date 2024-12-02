@@ -40,6 +40,7 @@
 #' @param variable The variable name. Default is "Tm".
 #' @param level The level of the data. Default is 5.
 #' @param CTY.type The data type for the "CTY" variable. Default is 4.
+#' @param ... Additional parameters to read in. 
 #'
 #' @export
 #' @method plot region

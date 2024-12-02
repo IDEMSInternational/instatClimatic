@@ -122,6 +122,8 @@
 \item{level}{The level of the data. Default is 5.}
 
 \item{CTY.type}{The data type for the "CTY" variable. Default is 4.}
+
+\item{...}{Additional parameters to read in.}
 }
 \description{
 This function generates a map of the selected product. It can plot either a certain year/month from a data file with multiple time steps or a single 2D field. The function requires the data to be prepared using the R script "Prep.Data.R" or "Apply.Function.R".
