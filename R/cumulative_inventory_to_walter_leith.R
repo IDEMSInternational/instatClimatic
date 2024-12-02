@@ -12,6 +12,7 @@
 #'   cumulative_inventory(my_data, "station", "start_date", "end_date")
 #' }
 #' @export
+# for issue 8342 - adding in a count of the number of elements that have missing values by period (and station)
 cumulative_inventory <- function(data, station = NULL, from, to){
   if (is.null(station)){
     data <- data %>%
