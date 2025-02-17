@@ -51,7 +51,7 @@ climatic_details <- function(data, date, elements = ..., stations,
     tidyr::pivot_longer(cols = c({{ elements }}),
                         names_to = "Element",
                         values_to = "Value") %>%
-    dplyr::mutate(Element = make_factor(Element))
+    dplyr::mutate(Element = instatExtras::make_factor(Element))
   
   # sort start/end times
   
@@ -149,7 +149,7 @@ climatic_details <- function(data, date, elements = ..., stations,
   }
   
   detail.table.all <- plyr::ldply(list_tables, data.frame) %>%
-    dplyr::mutate(Level = make_factor(Level))
+    dplyr::mutate(Level = instatExtras::make_factor(Level))
   
   return(detail.table.all)
   

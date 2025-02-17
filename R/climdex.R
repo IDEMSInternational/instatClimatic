@@ -90,12 +90,12 @@ climdex <- function(data, station, date, year, month, prec, tmax, tmin, indices,
   if (!missing(station)) {
     # TODO This is done in several places and should be extracted as a function.
     if (is.numeric(data[[station]])) df_out[[station]] <- as.numeric(df_out[[station]])
-    else if (is.factor(data[[station]])) df_out[[station]] <- make_factor(df_out[[station]])
+    else if (is.factor(data[[station]])) df_out[[station]] <- instatExtras::make_factor(df_out[[station]])
     else if (is.character(data[[station]])) df_out[[station]] <- as.character(df_out[[station]])
     else warning("Cannot recognise the class of station column. Link between data frames may be unstable.")
   }
   if (is.numeric(data[[year]])) df_out[[year]] <- as.numeric(df_out[[year]])
-  else if (is.factor(data[[year]])) df_out[[year]] <- make_factor(df_out[[year]])
+  else if (is.factor(data[[year]])) df_out[[year]] <- instatExtras::make_factor(df_out[[year]])
   else if (is.character(data[[year]])) df_out[[year]] <- as.character(df_out[[year]])
   if (freq == "monthly") {
     if (is.numeric(data[[month]])) df_out[[month]] <- as.numeric(df_out[[month]])
@@ -104,7 +104,7 @@ climdex <- function(data, station, date, year, month, prec, tmax, tmin, indices,
       if (length(lvs) == 12) df_out[[month]] <- factor(df_out[[month]], labels = lvs, ordered = is.ordered(data[[month]]))
       else {
         warning("month is a factor but does not have 12 levels. Output may not link correctly to data.")
-        df_out[[month]] <- make_factor(df_out[[month]])
+        df_out[[month]] <- instatExtras::make_factor(df_out[[month]])
       }
     }
     else if (is.character(data[[month]])) {

@@ -29,7 +29,7 @@ convert_to_character_matrix <- function(data, format_decimal_places = TRUE, deci
   else {
     out = matrix(nrow = nrow(data), ncol = ncol(data))
     if(!format_decimal_places) decimal_places=rep(NA, ncol(data))
-    else if(missing(decimal_places)) decimal_places = sapply(data, get_default_significant_figures)
+    else if(missing(decimal_places)) decimal_places = sapply(data, instatExtras::get_default_significant_figures)
     i = 1
     for (curr_col in colnames(data)) {
       #if its a geometry list-column then convert to text using sf package.
