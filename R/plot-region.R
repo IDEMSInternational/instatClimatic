@@ -242,7 +242,7 @@ plot.region <- function(lon, lat, product, time, time_point = as.Date("2002-01-0
       if (length(loc_lon)==length(loc_lat)&length(loc_lon)==length(loc_name)){
         for (i in 1:length(loc_lon)){
           graphics::points(loc_lon[i],loc_lat[i],pch=pch.cities)
-          text(loc_lon[i],loc_lat[i],loc_name[i], pos=label_pos)
+          graphics::text(loc_lon[i],loc_lat[i],loc_name[i], pos=label_pos)
         }
       }
     }
@@ -283,7 +283,7 @@ plot.region <- function(lon, lat, product, time, time_point = as.Date("2002-01-0
       if (length(loc_lon)==length(loc_lat)&length(loc_lon)==length(loc_name)){
         for (i in 1:length(loc_lon)){
           graphics::points(loc_lon[i],loc_lat[i],pch=pch.cities)
-          text(loc_lon[i],loc_lat[i],loc_name[i], pos=label_pos)
+          graphics::text(loc_lon[i],loc_lat[i],loc_name[i], pos=label_pos)
         }
       }
     }

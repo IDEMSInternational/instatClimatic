@@ -22,22 +22,18 @@ Imports:
     fields,
     forcats,
     ggplot2,
+    instatExtras,
     lubridate,
     magrittr,
     maps,
     methods,
-    ncdf4,
-    ncdf4.helpers,
     openair,
     patchwork,
     PCICt,
     plyr,
     purrr,
-    raster,
     reshape2,
     rlang,
-    sf,
-    sp,
     stringr,
     texmex,
     tibble,
@@ -45,4 +41,5 @@ Imports:
     tidyselect,
     zoo
 Remotes:
-    pacificclimate/climdex.pcic
+    pacificclimate/climdex.pcic,
+    IDEMSInternational/instatExtras

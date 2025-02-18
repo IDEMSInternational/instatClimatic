@@ -28,7 +28,7 @@ threshold_Plot <- function(x, r, type = c("GP", "PP", "Exponential"), nint = 10,
   n <- length(x)
   lst_plots <- list()
   if (missing(r)) {
-    r <- quantile(x, probs = c(0.75, 0.99))
+    r <- stats::quantile(x, probs = c(0.75, 0.99))
   }
   u.i <- matrix(seq(from = r[1], to = r[2],length.out =  nint), ncol = 1)
   thfun <- function(u, x, type, a, verbose, ...) {
