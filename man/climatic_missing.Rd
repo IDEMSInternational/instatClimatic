@@ -4,14 +4,7 @@
 \alias{climatic_missing}
 \title{Summarise missing climatic values}
 \usage{
-climatic_missing(
-  data,
-  date,
-  elements = ...,
-  stations,
-  start = TRUE,
-  end = FALSE
-)
+climatic_missing(data, date, elements, stations, start = TRUE, end = FALSE)
 }
 \arguments{
 \item{data}{A data frame containing climatic data.}

@@ -28,7 +28,7 @@
 #' #                 year = TRUE, 
 #' #                 level = TRUE)
 
-climatic_details <- function(data, date, elements = ..., stations,
+climatic_details <- function(data, date, elements, stations,
                              order = TRUE,
                              day = FALSE,
                              month = TRUE,

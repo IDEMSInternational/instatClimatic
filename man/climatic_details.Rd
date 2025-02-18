@@ -7,7 +7,7 @@
 climatic_details(
   data,
   date,
-  elements = ...,
+  elements,
   stations,
   order = TRUE,
   day = FALSE,

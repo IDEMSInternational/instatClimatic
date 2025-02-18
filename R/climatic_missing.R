@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' # TODO
-climatic_missing <- function(data, date, elements = ..., stations,
+climatic_missing <- function(data, date, elements, stations,
                              start = TRUE, end = FALSE){
   if (missing(date)){
     stop('argument "date" is missing, with no default')
