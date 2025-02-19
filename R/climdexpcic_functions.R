@@ -550,20 +550,25 @@ zhang.running.qtile <- function(x, dates.base, qtiles, bootstrap.range, include.
   dpy <- ifelse(is.null(attr(dates.base, "dpy")), 365, attr(dates.base, "dpy"))
   nyears <- floor(sum(inset) / dpy)
   
-  if(!is.null(include.mask))
+  if (!is.null(include.mask))
     x[include.mask] <- NA
   
   bs.data <- x[inset]
   
   qdat <- NULL
-  #if(get.bootstrap.data) {
-  #  d <- .Call("running_quantile_windowed_bootstrap", bs.data, n, qtiles, dpy, min.fraction.present, PACKAGE='climdex.pcic')
-  #  dim(d) <- c(dpy, nyears, nyears - 1, length(qtiles))
-  #  qdat <- lapply(1:length(qtiles), function(x) { r <- d[,,,x, drop=FALSE]; dim(r) <- dim(r)[1:3]; r })
-  #} else {
+  if (get.bootstrap.data) {
+    d <- running_quantile_windowed_bootstrap_R(bs.data, n, qtiles, dpy, min.fraction.present, n_bootstrap = nyears - 1)
+    dim(d) <- c(dpy, nyears, nyears - 1, length(qtiles))
+    qdat <- lapply(1:length(qtiles), function(i) { 
+      r <- d[,,,i, drop=FALSE]
+      dim(r) <- dim(r)[1:3]
+      r
+    })
+  } else {
     res <- running.quantile(bs.data, n, qtiles, dpy, min.fraction.present)
-    qdat <- lapply(1:length(qtiles), function(x) { res[,x] })
-  #}
+    qdat <- lapply(1:length(qtiles), function(i) res[,i])
+  }
+  
   names(qdat) <- paste("q", qtiles * 100, sep="")
   return(qdat)
 }
@@ -602,10 +607,54 @@ compute.stat <- function(ci, stat, data.key, freq = c("monthly", "annual", "seas
 
 ## Returns an n-day running quantile for each day of data (dimensions c(dpy, q))
 running.quantile <- function(data, n, q, dpy, min.fraction) {
-  ret <- .Call("running_quantile_windowed", data, n, q, dpy, min.fraction, PACKAGE='climdex.pcic')
+  ret <- running_quantile_windowed_R(data, n, q, dpy, min.fraction)
   dim(ret) <- c(length(q), dpy)
   return(t(ret))
 }
+
+# Running quantile computation using only R
+running_quantile_windowed_R <- function(data, n, q, dpy, min.fraction) {
+  ndays <- length(data)
+  ret <- matrix(NA, nrow = length(q), ncol = dpy)
+  
+  for (i in 1:dpy) {
+    indices <- seq(i, ndays, by = dpy)  # Get indices corresponding to the same day across years
+    values <- unlist(lapply(indices, function(idx) {
+      range <- max(1, idx - floor(n/2)) : min(ndays, idx + floor(n/2))
+      data[range]
+    }))
+    values <- values[!is.na(values)]  # Remove missing values
+    
+    if (length(values) / length(indices) >= min.fraction) {
+      ret[, i] <- quantile(values, probs = q, na.rm = TRUE)
+    }
+  }
+  
+  return(ret)
+}
+
+running_quantile_windowed_bootstrap_R <- function(data, n, qtiles, dpy, min.fraction.present, n_bootstrap) {
+  nyears <- floor(length(data) / dpy)
+  result <- array(NA, dim = c(dpy, nyears, n_bootstrap, length(qtiles)))
+  
+  for (b in 1:n_bootstrap) {
+    sampled_years <- sample(1:nyears, nyears, replace = TRUE)
+    for (i in 1:dpy) {
+      window_values <- unlist(lapply(sampled_years, function(y) {
+        index <- (y - 1) * dpy + (max(1, i - floor(n/2)) : min(dpy, i + floor(n/2)))
+        data[index]
+      }))
+      window_values <- window_values[!is.na(window_values)]
+      
+      if (length(window_values) / length(sampled_years) >= min.fraction.present) {
+        result[i, , b, ] <- quantile(window_values, probs = qtiles, na.rm = TRUE)
+      }
+    }
+  }
+  
+  return(result)
+}
+
 
 ## Get number of days within range
 get.num.days.in.range <- function(x, date.range) {
