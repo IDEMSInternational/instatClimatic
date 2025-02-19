@@ -121,6 +121,10 @@ climdex.rnnmm <- function(ci, threshold=1) {
 #' This function computes the climdex index CDD: the annual maximum length of dry spells, in days.
 #' Dry spells are considered to be sequences of days where daily preciptation
 #' is less than 1mm per day.
+#' @param ci Object of type climdexInput.
+#' @param spells.can.span.years specifies whether spells can cross
+#' year boundaries -- i.e., span years. The default for this is the same as
+#' fclimdex.
 #' @param include.exact.dates Logical, if TRUE, return a data frame with spell durations and the start and end dates of each spell; if FALSE, return only the spell durations.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).

@@ -7,6 +7,12 @@
 climdex.cdd(ci, spells.can.span.years = T, include.exact.dates = FALSE)
 }
 \arguments{
+\item{ci}{Object of type climdexInput.}
+
+\item{spells.can.span.years}{specifies whether spells can cross
+year boundaries -- i.e., span years. The default for this is the same as
+fclimdex.}
+
 \item{include.exact.dates}{Logical, if TRUE, return a data frame with spell durations and the start and end dates of each spell; if FALSE, return only the spell durations.}
 }
 \description{

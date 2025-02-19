@@ -126,20 +126,20 @@ valid.climdexInput <- function(object) {
 #' @seealso \code{\link{climdexInput.raw}}.
 #' @keywords climate ts
 #' @examples
-#' library(PCICt)
+#' #library(PCICt)
 #' 
 #' ## Parse the dates into PCICt.
-#' tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
+#' #tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+#' #"jday")]), format="%Y %j", cal="gregorian")
+#' #tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+#' #"jday")]), format="%Y %j", cal="gregorian")
+#' #prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+#' #"jday")]), format="%Y %j", cal="gregorian")
 #' 
 #' ## Load the data in.
-#' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
+#' #ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
+#' #ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
+#' #tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 #' 
 #' @export
 setClass("climdexInput",
@@ -188,11 +188,10 @@ setClass("climdexInput",
 #' number of days that can be missing in a month and 'seasonal' (the
 #' number of days that can be missing in a season. If one month in a year fails
 #' the test, the corresponding year will be omitted.
-#' @param min.base.fraction.present the minimum fraction
+#' @param min.base.data.fraction.present the minimum fraction
 #' of data which must be present for a quantile to be calculated for a 
 #' particular day. If the fraction of data present is less than this threshold, 
 #' the quantile for that day will be set to NA.
-#' @param min.base.data.fraction.present TODO
 #' 
 #' @details
 #' This function takes input climate data at daily resolution, and produces as

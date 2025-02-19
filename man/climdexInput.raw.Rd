@@ -66,9 +66,7 @@ number of days that can be missing in a month and 'seasonal' (the
 number of days that can be missing in a season. If one month in a year fails
 the test, the corresponding year will be omitted.}
 
-\item{min.base.data.fraction.present}{TODO}
-
-\item{min.base.fraction.present}{the minimum fraction
+\item{min.base.data.fraction.present}{the minimum fraction
 of data which must be present for a quantile to be calculated for a
 particular day. If the fraction of data present is less than this threshold,
 the quantile for that day will be set to NA.}
