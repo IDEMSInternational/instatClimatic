@@ -41,5 +41,5 @@ Imports:
     tidyselect,
     zoo
 Remotes:
-    pacificclimate/climdex.pcic,
+    IDEMSInternational/climdex.pcic,
     IDEMSInternational/instatExtras
