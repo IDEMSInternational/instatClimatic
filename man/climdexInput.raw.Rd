@@ -24,12 +24,52 @@ climdexInput.raw(
 )
 }
 \arguments{
-\item{northern.hemisphere}{Whether this point is in the northern hemisphere.}
+\item{tmax}{numeric vector containing the data on which the indices are to be computed. (degrees C)}
 
-\item{quantiles}{Threshold quantiles for supplied variables.}
+\item{tmin}{numeric vector containing the data on which the indices are to be computed. (degrees C)}
 
-\item{max.missing.days}{Vector containing thresholds for number of days
-allowed missing per year (annual), per month (monthly) and per season (seasonal).}
+\item{prec}{numeric vector containing the data on which the indices are to be computed. (mm/day)}
+
+\item{tmax.dates}{vector of type \code{PCICt} of the maximum date.}
+
+\item{tmin.dates}{vector of type \code{PCICt} of the minimum date.}
+
+\item{prec.dates}{vector of type \code{PCICt} of the precipitation date.}
+
+\item{base.range}{a pair of 4 digit years which bound the data on which the base percentiles are calculated.}
+
+\item{n}{the size of the window used when computing the percentiles used in \code{\link{climdex.tx10p}},
+\code{\link{climdex.tn10p}}, \code{\link{climdex.tx90p}}, and \code{\link{climdex.tn90p}}.}
+
+\item{northern.hemisphere}{whether the data came from
+the northern hemisphere. If FALSE, data is assumed to have come from the
+southern hemisphere. This is used when computing growing season length; if
+the data is from the southern hemisphere, growing season length is the
+growing season starting in the beginning of July of the year indicated,
+running to the end of June of the following year.}
+
+\item{tavg}{Average temperature, default \code{NULL}}
+
+\item{tavg.dates}{Average temperature dates, default \code{NULL}}
+
+\item{quantiles}{supply pre-computed quantiles. This is a list consisting of quantiles for each variable.}
+
+\item{temp.qtiles}{modify the quantiles calculated. For example, specifying
+temp.qtiles=c(0.10, 0.50, 0.90) would calculate the 10th, 50th, and 90th
+percentiles for temperature.}
+
+\item{prec.qtiles}{modify the quantiles calculated.}
+
+\item{max.missing.days}{vector consisting of 'annual'
+(the number of days that can be missing in a year), 'monthly' (the
+number of days that can be missing in a month and 'seasonal' (the
+number of days that can be missing in a season. If one month in a year fails
+the test, the corresponding year will be omitted.}
+
+\item{min.base.fraction.present}{the minimum fraction
+of data which must be present for a quantile to be calculated for a
+particular day. If the fraction of data present is less than this threshold,
+the quantile for that day will be set to NA.}
 }
 \value{
 An object of class \code{\link{climdexInput-class}} for use with
@@ -44,30 +84,6 @@ This function takes input climate data at daily resolution, and produces as
 output a ClimdexInput data structure. This data structure can then be passed
 to any of the routines used to compute the Climdex indices. The indices
 themselves are specified on the webpage cited in the references section.
-The \code{base.range} argument is a pair of 4 digit years which bound the
-data on which the base percentiles are calculated.
-
-The \code{tmax}, \code{tmin}, and \code{prec} arguments are numeric vectors
-containing the data on which the indices are to be computed. The units are
-assumed to be degrees C for temperature, and mm/day for precipitation.
-
-The \code{tmax.dates}, \code{tmin.dates}, and \code{prec.dates} arguments
-are vectors of type \code{PCICt}.
-
-The \code{n} argument specifies the size of the window used when computing
-the percentiles used in \code{\link{climdex.tx10p}},
-\code{\link{climdex.tn10p}}, \code{\link{climdex.tx90p}}, and
-\code{\link{climdex.tn90p}}.
-
-The \code{northern.hemisphere} argument specifies whether the data came from
-the northern hemisphere. If FALSE, data is assumed to have come from the
-southern hemisphere. This is used when computing growing season length; if
-the data is from the southern hemisphere, growing season length is the
-growing season starting in the beginning of July of the year indicated,
-running to the end of June of the following year.
-
-The \code{quantiles} argument allows the user to supply pre-computed quantiles.
-This is a list consisting of quantiles for each variable.
 
 For each temperature variable, there are separate lists of quantiles for
 inbase and outbase, with these names. In both cases, quantiles within these
@@ -82,22 +98,6 @@ year, with a particular year replaced.
 
 For precipitation variables, there is a named vector of quantiles, consisting
 of at least q95 and q99.
-
-The \code{temp.qtiles} and \code{prec.qtiles} arguments allow the user to
-modify the quantiles calculated. For example, specifying
-temp.qtiles=c(0.10, 0.50, 0.90) would calculate the 10th, 50th, and 90th
-percentiles for temperature.
-
-The \code{min.base.fraction.present} argument specifies the minimum fraction
-of data which must be present for a quantile to be calculated for a
-particular day. If the fraction of data present is less than this threshold,
-the quantile for that day will be set to NA.
-
-The \code{max.missing.days} argument is a vector consisting of 'annual'
-(the number of days that can be missing in a year), 'monthly' (the
-number of days that can be missing in a month and 'seasonal' (the
-number of days that can be missing in a season. If one month in a year fails
-the test, the corresponding year will be omitted.
 }
 \note{
 Units are assumed to be mm/day for precipitation and degrees Celsius
@@ -110,22 +110,20 @@ library(PCICt)
 ## ready to go.
 
 ## Parse the dates into PCICt.
-tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
 "jday")]), format="\%Y \%j", cal="gregorian")
-tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
 "jday")]), format="\%Y \%j", cal="gregorian")
-prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
 "jday")]), format="\%Y \%j", cal="gregorian")
 
 ## Load the data in.
 ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
 ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
 tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-
 }
 \references{
-\url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
-
+For Climdex Indices: \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
 This function is from the \code{pacificclimate/climdex.pcic} repository.
 The \code{climdex.pcic} package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 For more information, visit the repository: \url{https://github.com/pacificclimate/climdex.pcic}

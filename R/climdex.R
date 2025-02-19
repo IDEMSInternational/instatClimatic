@@ -1,7 +1,6 @@
-#' Calculate climate indices
+#' Calculate Climate Indices
 #'
-#' @description
-#'  This function calculates climate indices based on temperature and precipitation data.  
+#' @description This function calculates climate indices based on temperature and precipitation data.  
 #'  
 #' @param data A data frame containing the temperature and precipitation data.
 #' @param station The name of the column in the data frame that represents the station.

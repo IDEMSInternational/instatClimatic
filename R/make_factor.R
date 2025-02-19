@@ -9,8 +9,6 @@
 #' and the ordered parameter is consistent with the existing ordering, the input data is returned as is.
 #' Otherwise, the input data is converted into a factor variable with the specified ordering.
 #'
-#' @export
-#'
 #' @examples
 #' # Create a factor from a numeric vector
 #' #make_factor(c(1, 2,3,3,2,2,1,1,1, 3, 2), ordered = TRUE)

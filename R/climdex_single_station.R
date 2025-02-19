@@ -1,7 +1,5 @@
-
-#' climdex_single_station
-#' @description
-#' This function calculates climate indices for a single weather station based on the provided parameters. The function utilizes the climdex.pcic package to compute various climate indices. The indices can be calculated either on an annual or monthly basis, depending on the specified frequency.
+#' Climdex Single Station
+#' @description This function calculates climate indices for a single weather station based on the provided parameters. The function utilizes the climdex.pcic package to compute various climate indices. The indices can be calculated either on an annual or monthly basis, depending on the specified frequency.
 #'
 #' @param ci
 #' The climate data for the weather station.
@@ -36,8 +34,6 @@
 #'#data <- read.csv("climate_data.csv")
 #'#climdex_single_station(data, freq = "annual", indices = c("fd", "su"),
 #'# year = "Year")
-
-
 climdex_single_station <- function(ci, freq = "annual", indices, year, month,
                                    spells.can.span.years = FALSE, gsl.mode = gsl.mode,
                                    threshold = 1) {
@@ -92,4 +88,3 @@ climdex_single_station <- function(ci, freq = "annual", indices, year, month,
   }
   return(df_ind)
 }
-

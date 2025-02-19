@@ -15,7 +15,3 @@ If the data is numeric, "3", otherwise NA.
 \description{
 This function gets the default number of significant figures when given a numeric vector.
 }
-\examples{
-x <- 1:8
-get_default_significant_figures(x)
-}

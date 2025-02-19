@@ -101,11 +101,11 @@ and monthly data.}
 library(PCICt)
 
 ## Parse the dates into PCICt.
-tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
 "jday")]), format="\%Y \%j", cal="gregorian")
-tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
 "jday")]), format="\%Y \%j", cal="gregorian")
-prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
 "jday")]), format="\%Y \%j", cal="gregorian")
 
 ## Load the data in.

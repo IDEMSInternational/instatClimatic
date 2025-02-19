@@ -21,7 +21,7 @@ spei_input(data, station, year, month, element)
 A time series object (\code{ts}) containing the calculated SPEI input data.
 }
 \description{
-This function calculates the Standardized Precipitation-Evapotranspiration Index (SPEI) input data from a given data frame. The function sorts the data by year and month, checks for data completeness, and prepares the data for further SPEI calculations.
+This function calculates the Standardised Precipitation-Evapotranspiration Index (SPEI) input data from a given data frame. The function sorts the data by year and month, checks for data completeness, and prepares the data for further SPEI calculations.
 
 #' @details
 The function expects the input data to be in a data frame format. It calculates the SPEI input data by performing the following steps:

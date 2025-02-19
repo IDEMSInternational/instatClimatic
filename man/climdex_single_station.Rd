@@ -2,7 +2,7 @@
 % Please edit documentation in R/climdex_single_station.R
 \name{climdex_single_station}
 \alias{climdex_single_station}
-\title{climdex_single_station}
+\title{Climdex Single Station}
 \usage{
 climdex_single_station(
   ci,

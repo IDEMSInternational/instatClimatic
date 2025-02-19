@@ -15,8 +15,9 @@ RoxygenNote: 7.3.2
 Imports: 
     colorRamps,
     data.table,
-    distillery,
+    databook,
     dplyr,
+    distillery,
     extRemes,
     fields,
     forcats,
@@ -40,4 +41,5 @@ Imports:
     tidyselect,
     zoo
 Remotes:
+    IDEMSInternational/databook,
     IDEMSInternational/instatExtras

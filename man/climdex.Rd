@@ -2,7 +2,7 @@
 % Please edit documentation in R/climdex.R
 \name{climdex}
 \alias{climdex}
-\title{Calculate climate indices}
+\title{Calculate Climate Indices}
 \usage{
 climdex(
   data,

@@ -9,7 +9,7 @@ valid.climdexInput <- function(object) {
   present.data.vars <- names(object@data)
   length.check.slots <- c("dates", "jdays")
   length.check.members <- c("date.factors", "data")
-  data.lengths <- c(sapply(object@data, length), sapply(length.check.slots, function(y) length(slot(object, y))), unlist(sapply(length.check.members, function(y) { sapply(slot(object, y), length) })))
+  data.lengths <- c(sapply(object@data, length), sapply(length.check.slots, function(y) length(methods::slot(object, y))), unlist(sapply(length.check.members, function(y) { sapply(methods::slot(object, y), length) })))
   quantiles <- list(tmax=temp.quantiles, tmin=temp.quantiles, prec=prec.quantiles)
   
   if(!all(data.lengths == max(data.lengths)))
@@ -129,11 +129,11 @@ valid.climdexInput <- function(object) {
 #' library(PCICt)
 #' 
 #' ## Parse the dates into PCICt.
-#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+#' tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
 #' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+#' tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
 #' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+#' prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
 #' "jday")]), format="%Y %j", cal="gregorian")
 #' 
 #' ## Load the data in.
@@ -160,36 +160,44 @@ setClass("climdexInput",
 #' @description
 #' This function creates a climdexInput object from data already ingested into
 #' R.
+#'
+#' @param tmax numeric vector containing the data on which the indices are to be computed. (degrees C)
+#' @param tmin numeric vector containing the data on which the indices are to be computed. (degrees C)
+#' @param prec numeric vector containing the data on which the indices are to be computed. (mm/day)
+#' @param tmax.dates vector of type \code{PCICt} of the maximum date.
+#' @param tmin.dates vector of type \code{PCICt} of the minimum date.
+#' @param prec.dates vector of type \code{PCICt} of the precipitation date.
+#' @param base.range a pair of 4 digit years which bound the data on which the base percentiles are calculated.
+#' @param n the size of the window used when computing the percentiles used in \code{\link{climdex.tx10p}},
+#' \code{\link{climdex.tn10p}}, \code{\link{climdex.tx90p}}, and \code{\link{climdex.tn90p}}.
+#' @param northern.hemisphere whether the data came from
+#' the northern hemisphere. If FALSE, data is assumed to have come from the
+#' southern hemisphere. This is used when computing growing season length; if
+#' the data is from the southern hemisphere, growing season length is the
+#' growing season starting in the beginning of July of the year indicated,
+#' running to the end of June of the following year.
+#' @param tavg Average temperature, default `NULL`
+#' @param tavg.dates Average temperature dates, default `NULL`
+#' @param quantiles supply pre-computed quantiles. This is a list consisting of quantiles for each variable.
+#' @param temp.qtiles modify the quantiles calculated. For example, specifying
+#' temp.qtiles=c(0.10, 0.50, 0.90) would calculate the 10th, 50th, and 90th
+#' percentiles for temperature.
+#' @param prec.qtiles modify the quantiles calculated.
+#' @param max.missing.days vector consisting of 'annual'
+#' (the number of days that can be missing in a year), 'monthly' (the
+#' number of days that can be missing in a month and 'seasonal' (the
+#' number of days that can be missing in a season. If one month in a year fails
+#' the test, the corresponding year will be omitted.
+#' @param min.base.fraction.present the minimum fraction
+#' of data which must be present for a quantile to be calculated for a 
+#' particular day. If the fraction of data present is less than this threshold, 
+#' the quantile for that day will be set to NA.
 #' 
 #' @details
 #' This function takes input climate data at daily resolution, and produces as
 #' output a ClimdexInput data structure. This data structure can then be passed
 #' to any of the routines used to compute the Climdex indices. The indices
 #' themselves are specified on the webpage cited in the references section.
-#' The \code{base.range} argument is a pair of 4 digit years which bound the
-#' data on which the base percentiles are calculated.
-#' 
-#' The \code{tmax}, \code{tmin}, and \code{prec} arguments are numeric vectors
-#' containing the data on which the indices are to be computed. The units are
-#' assumed to be degrees C for temperature, and mm/day for precipitation.
-#'
-#' The \code{tmax.dates}, \code{tmin.dates}, and \code{prec.dates} arguments
-#' are vectors of type \code{PCICt}.
-#' 
-#' The \code{n} argument specifies the size of the window used when computing
-#' the percentiles used in \code{\link{climdex.tx10p}},
-#' \code{\link{climdex.tn10p}}, \code{\link{climdex.tx90p}}, and
-#' \code{\link{climdex.tn90p}}.
-#' 
-#' The \code{northern.hemisphere} argument specifies whether the data came from
-#' the northern hemisphere. If FALSE, data is assumed to have come from the
-#' southern hemisphere. This is used when computing growing season length; if
-#' the data is from the southern hemisphere, growing season length is the
-#' growing season starting in the beginning of July of the year indicated,
-#' running to the end of June of the following year.
-#' 
-#' The \code{quantiles} argument allows the user to supply pre-computed quantiles.
-#' This is a list consisting of quantiles for each variable.
 #' 
 #' For each temperature variable, there are separate lists of quantiles for 
 #' inbase and outbase, with these names. In both cases, quantiles within these
@@ -204,33 +212,18 @@ setClass("climdexInput",
 #'
 #' For precipitation variables, there is a named vector of quantiles, consisting
 #' of at least q95 and q99. 
-#'
-#' The \code{temp.qtiles} and \code{prec.qtiles} arguments allow the user to
-#' modify the quantiles calculated. For example, specifying
-#' temp.qtiles=c(0.10, 0.50, 0.90) would calculate the 10th, 50th, and 90th
-#' percentiles for temperature.
-#'
-#' The \code{min.base.fraction.present} argument specifies the minimum fraction
-#' of data which must be present for a quantile to be calculated for a 
-#' particular day. If the fraction of data present is less than this threshold, 
-#' the quantile for that day will be set to NA.
-#'
-#' The \code{max.missing.days} argument is a vector consisting of 'annual'
-#' (the number of days that can be missing in a year), 'monthly' (the
-#' number of days that can be missing in a month and 'seasonal' (the
-#' number of days that can be missing in a season. If one month in a year fails
-#' the test, the corresponding year will be omitted.
 #' 
 #' @seealso \code{\link{climdex.pcic-package}}, \code{\link{strptime}}.
-#' @references \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
 #' @keywords ts climate
+#' @references For Climdex Indices: \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
+#' This function is from the `pacificclimate/climdex.pcic` repository. 
+#' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
+#' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
+#' Special thanks to the contributors of the `climdex.pcic` package for their efforts in climate data analysis.
 #'
-#' @param northern.hemisphere Whether this point is in the northern hemisphere.
-#' @param quantiles Threshold quantiles for supplied variables.
-#' @param max.missing.days Vector containing thresholds for number of days
-#' allowed missing per year (annual), per month (monthly) and per season (seasonal).
 #' @return An object of class \code{\link{climdexInput-class}} for use with
 #' other climdex methods.
+#' 
 #' @note Units are assumed to be mm/day for precipitation and degrees Celsius
 #' for temperature. No units conversion is performed internally.
 #' 
@@ -241,23 +234,17 @@ setClass("climdexInput",
 #' ## ready to go.
 #' 
 #' ## Parse the dates into PCICt.
-#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+#' tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
 #' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+#' tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
 #' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+#' prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
 #' "jday")]), format="%Y %j", cal="gregorian")
 #' 
 #' ## Load the data in.
 #' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
 #' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
 #' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-#'
-#' @references This function is from the `pacificclimate/climdex.pcic` repository. 
-#' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
-#' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
-#' Special thanks to the contributors of the `climdex.pcic` package for their efforts in climate data analysis.
-#'
 #' @export 
 climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, tmin.dates=NULL, prec.dates=NULL,
                              base.range=c(1961, 1990), n=5, northern.hemisphere=TRUE,
@@ -271,11 +258,11 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
   cal <- attr(all.dates, "cal")
   
   ## Convert base range (in years) to PCICt
-  bs.date.range <- as.PCICt(paste(base.range, c("01-01", last.day.of.year), sep="-"), cal=cal)
+  bs.date.range <- PCICt::as.PCICt(paste(base.range, c("01-01", last.day.of.year), sep="-"), cal=cal)
   bs.date.series <- seq(bs.date.range[1], bs.date.range[2], by="day")
   
   ## Get dates for normal data
-  new.date.range <- as.PCICt(paste(as.numeric(format(range(all.dates), "%Y", tz="GMT")), c("01-01", last.day.of.year), sep="-"), cal=cal)
+  new.date.range <- PCICt::as.PCICt(paste(as.numeric(format(range(all.dates), "%Y", tz="GMT")), c("01-01", last.day.of.year), sep="-"), cal=cal)
   date.series <- seq(new.date.range[1], new.date.range[2], by="day")
   jdays <- get.jdays.replaced.feb29(get.jdays(date.series))
   
@@ -379,7 +366,7 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
     quantiles <- as.environment(quantiles)
   }
   
-  return(new("climdexInput", data=filled.list, quantiles=quantiles, namasks=namasks, dates=date.series, jdays=jdays, base.range=bs.date.range, date.factors=date.factors, northern.hemisphere=northern.hemisphere, max.missing.days=max.missing.days))
+  return(methods::new("climdexInput", data=filled.list, quantiles=quantiles, namasks=namasks, dates=date.series, jdays=jdays, base.range=bs.date.range, date.factors=date.factors, northern.hemisphere=northern.hemisphere, max.missing.days=max.missing.days))
 }
 
 ## Get the last month and day of the year as a character sting, separated by the specified separator.
@@ -398,6 +385,11 @@ get.years <- function(dates) {
   return(as.POSIXlt(dates)$year + 1900)
 }
 
+## Get month number
+get.months <- function(dates) {
+  return(as.POSIXlt(dates)$mon + 1)
+}
+
 ## Juggle the list so that day 366 == day 365
 get.jdays.replaced.feb29 <- function(jdays) {
   indices <- which(jdays == 366)
@@ -408,10 +400,10 @@ get.jdays.replaced.feb29 <- function(jdays) {
 
 ## Converts a positional index with respect to some origin into a PCICt object in the format %Y-%m-%d.
 ymd.dates <- function(origin, cal, exact.day, val) {
-  origin.pcict <- as.PCICt(origin, cal)
+  origin.pcict <- PCICt::as.PCICt(origin, cal)
   seconds.per.day <- 86400
   exact.day.pcict <- origin.pcict + (ifelse(is.na(exact.day),1,exact.day - 1)) * seconds.per.day
-  ymd <- as.PCICt(exact.day.pcict, cal = cal, format = "%Y-%m-%d")
+  ymd <- PCICt::as.PCICt(exact.day.pcict, cal = cal, format = "%Y-%m-%d")
   ymd <- format(ymd, "%Y-%m-%d")
   ymd[is.na(val)] <- NA
   return(ymd)
@@ -564,14 +556,14 @@ zhang.running.qtile <- function(x, dates.base, qtiles, bootstrap.range, include.
   bs.data <- x[inset]
   
   qdat <- NULL
-  if(get.bootstrap.data) {
-    d <- .Call("running_quantile_windowed_bootstrap", bs.data, n, qtiles, dpy, min.fraction.present, PACKAGE='climdex.pcic')
-    dim(d) <- c(dpy, nyears, nyears - 1, length(qtiles))
-    qdat <- lapply(1:length(qtiles), function(x) { r <- d[,,,x, drop=FALSE]; dim(r) <- dim(r)[1:3]; r })
-  } else {
+  #if(get.bootstrap.data) {
+  #  d <- .Call("running_quantile_windowed_bootstrap", bs.data, n, qtiles, dpy, min.fraction.present, PACKAGE='climdex.pcic')
+  #  dim(d) <- c(dpy, nyears, nyears - 1, length(qtiles))
+  #  qdat <- lapply(1:length(qtiles), function(x) { r <- d[,,,x, drop=FALSE]; dim(r) <- dim(r)[1:3]; r })
+  #} else {
     res <- running.quantile(bs.data, n, qtiles, dpy, min.fraction.present)
     qdat <- lapply(1:length(qtiles), function(x) { res[,x] })
-  }
+  #}
   names(qdat) <- paste("q", qtiles * 100, sep="")
   return(qdat)
 }
@@ -588,7 +580,7 @@ get.temp.var.quantiles <- function(filled.data, date.series, bs.date.series, qti
 get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtiles=c(0.95, 0.99)) {
   wet.days <- !(is.na(filled.prec) | filled.prec < 1)
   inset <- date.series >= bs.date.range[1] & date.series <= bs.date.range[2] & !is.na(filled.prec) & wet.days
-  pq <- quantile(filled.prec[inset], qtiles, type=8)
+  pq <- stats::quantile(filled.prec[inset], qtiles, type=8)
   names(pq) <- paste("q", qtiles * 100, sep="")
   return(pq)
 }
@@ -606,6 +598,18 @@ compute.stat <- function(ci, stat, data.key, freq = c("monthly", "annual", "seas
   }
   
   return(suppressWarnings(tapply.fast(data, date.factors, stat, na.rm = TRUE)) * mask)
+}
+
+## Returns an n-day running quantile for each day of data (dimensions c(dpy, q))
+running.quantile <- function(data, n, q, dpy, min.fraction) {
+  ret <- .Call("running_quantile_windowed", data, n, q, dpy, min.fraction, PACKAGE='climdex.pcic')
+  dim(ret) <- c(length(q), dpy)
+  return(t(ret))
+}
+
+## Get number of days within range
+get.num.days.in.range <- function(x, date.range) {
+  return(sum(x >= date.range[1] & x <= date.range[2]))  
 }
 
 ## Helper function to extract parameters for rxnday indices.
@@ -728,7 +732,7 @@ spell.length.max <- function(daily.prec, date.factor, threshold, op, spells.can.
     
     start <- end - max.spell
     origin <- paste(names(max.spell), "01", "01", sep = "-")
-    origin.pcict <- as.PCICt(origin, cal)
+    origin.pcict <- PCICt::as.PCICt(origin, cal)
     seconds.per.day <- 86400
     start.pcict <- origin.pcict + start * seconds.per.day
     end.pcict <- origin.pcict + (end - 1) * seconds.per.day
@@ -775,4 +779,114 @@ running.mean <- function(vec, bin){
   means = cumsum(means)/bin                  # apply precomputed differences
   means = c(rep(NA,left.bin), means, rep(NA,right.bin))   # extend to original vector length
   return(means)
+}
+
+## Simple Precipitation Intensity Index
+simple.precipitation.intensity.index <- function(daily.prec, date.factor) {
+  return(tapply.fast(daily.prec, date.factor, function(prec) { idx <- prec >= 1 & !is.na(prec); if(sum(idx) == 0) { return(0); } else { return(sum(prec[idx], na.rm=TRUE) / sum(idx)) } } ))
+}
+
+## DTR
+## Computes mean diurnal temperature range in each period (as specified by date.factor).
+## Max and min temps are assumed to be same length
+compute.mean.daily.temp.range <- function(daily.max.temp, daily.min.temp, date.factor) {
+  dat <- tapply.fast(daily.max.temp - daily.min.temp, date.factor, mean, na.rm=TRUE)
+  dat[is.nan(dat)] <- NA
+  dat
+}
+
+## Flexible GSL function - This function computes the growing season length (GSL) given the input,
+## which is allowed to vary considerably from the ETCCDI definitions.
+growing.season.length <- function(daily.mean.temp, date.factor, dates, northern.hemisphere,
+                                  min.length = 6, t.thresh = 5, gsl.mode = c("GSL", "GSL_first", "GSL_max", "GSL_sum"), include.exact.dates = FALSE, cal) {
+  gsl.mode <- match.arg(gsl.mode)
+  month.series <- get.months(dates)
+  transition.month <- if (northern.hemisphere) 7 else 1
+  if (gsl.mode == "GSL") {
+    growing.season <- (tapply.fast(1:length(daily.mean.temp), date.factor, function(idx) {
+      temp.data <- daily.mean.temp[idx]
+      ts.mid <- utils::head(which(month.series[idx] == transition.month), n = 1)
+      if (!length(ts.mid)) {
+        return(NA)
+      }
+      
+      ts.len <- length(temp.data)
+      gs.begin <- which(select.blocks.gt.length(temp.data[1:(ts.mid - 1)] > t.thresh, min.length - 1))
+      
+      ## Growing season actually ends the day -before- the sequence of sketchy days
+      gs.end <- which(select.blocks.gt.length(temp.data[ts.mid:ts.len] < t.thresh, min.length - 1)) - 1
+      
+      ## If no growing season start, 0 length; if no end, ends at end of year; otherwise, end - start + 1
+      # season.length <- ifelse(length(gs.begin) == 0, 0, ifelse(length(gs.end) == 0, ts.len - gs.begin[1] + 1, gs.end[1] - gs.begin[1] + ts.mid))
+      
+      if (is.na(gs.begin[1])) {
+        start <- NA_character_
+        end <- NA_character_
+        season.length <- 0  # Set season length to 0
+      } 
+      else if (is.na(gs.end[1])) {
+        start <- gs.begin[1]
+        end <- ts.len - 1 # Last DOY
+        season.length <- ts.len - start + 1
+      } 
+      else {
+        start <- gs.begin[1]
+        end <- gs.end[1] + ts.mid -1
+        season.length <- end - start +1 
+      }
+      
+      if (include.exact.dates) {
+        if(northern.hemisphere){
+          origin <- paste(year = unique(date.factor[idx]), "01", "01", sep = "-")
+        }
+        else {origin <- paste(year = unique(date.factor[idx]), "07", "01", sep = "-")}
+        
+        origin.pcict <- PCICt::as.PCICt(origin, cal)
+        seconds.per.day <- 86400
+        
+        if (!is.na(start)){
+          start.pcict <- origin.pcict + (start - 1) * seconds.per.day
+          start <- format(start.pcict, "%Y-%m-%d")
+          end.pcict <- origin.pcict + (end * seconds.per.day)
+          end <- format(end.pcict, "%Y-%m-%d")
+        }
+        
+        result <- c(start, sl <- season.length, end)
+      } 
+      else { result <- season.length}
+      return(result)
+    }))
+    
+    if (include.exact.dates) {
+      start <- growing.season[seq(1, length(growing.season), by = 3)]
+      sl <- growing.season[seq(2, length(growing.season), by = 3)]
+      sl <- as.numeric(sl)
+      end <- growing.season[seq(3, length(growing.season), by = 3)]
+      year <- names(growing.season[1:length(start)]) 
+      if(!northern.hemisphere){
+        sl <- c(sl,NA)
+        end <- c(end,NA)
+      }
+      df <- data.frame(start,sl, end)
+      rownames(df) <- year
+      return(df)
+    }
+    return(growing.season)
+  } 
+  else {
+    in.gsl <- !select.blocks.gt.length(!select.blocks.gt.length(daily.mean.temp >= t.thresh, min.length - 1), min.length - 1)
+    warning("GSL_first, GSL_max, and GSL_sum are experimental alternative growing season length definitions. Use at your own risk.")
+    
+    innerfunc <- switch(gsl.mode,
+                        GSL_first = function(bl) {
+                          ifelse(any(bl > 0), (bl[bl > 0])[1], 0)
+                        },
+                        GSL_max = max,
+                        GSL_sum = sum
+    )
+    return(tapply.fast(in.gsl, date.factor, function(ts) {
+      block.lengths <- get.series.lengths.at.ends(ts)
+      return(innerfunc(block.lengths))
+    }))
+  }
 }

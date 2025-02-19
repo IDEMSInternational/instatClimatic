@@ -21,7 +21,7 @@ spei_output(x, data, station, year, month)
 A vector containing the extracted SPEI/SPI column from the 'spei' object 'x'.
 }
 \description{
-This function extracts the Standardized Precipitation-Evapotranspiration Index (SPEI) or Standardized Precipitation Index (SPI) column from a 'spei' object. It is designed to work with the original data and handle multiple stations if present. The function removes NA values introduced when unstacking the data to return a vector of the correct length.
+This function extracts the Standardised Precipitation-Evapotranspiration Index (SPEI) or Standardized Precipitation Index (SPI) column from a 'spei' object. It is designed to work with the original data and handle multiple stations if present. The function removes NA values introduced when unstacking the data to return a vector of the correct length.
 }
 \examples{
 # TODO:
