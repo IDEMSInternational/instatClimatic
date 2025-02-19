@@ -139,6 +139,10 @@ climdex.cdd <- function(ci, spells.can.span.years = T, include.exact.dates = FAL
 #' index CWD: the annual maximum length of wet spells, in days.
 #' Wet spells are considered to be sequences of days where daily precipitation
 #' is at least 1mm per day.
+#' @param ci Object of type climdexInput.
+#' @param spells.can.span.years specifies whether spells can cross
+#' year boundaries -- i.e., span years. The default for this is the same as
+#' fclimdex.
 #' @param include.exact.dates Logical, if TRUE, return a data frame with spell durations and the start and end dates of each spell; if FALSE, return only the spell durations.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
@@ -302,7 +306,6 @@ climdex.tr <- function(ci) { stopifnot(!is.null(ci@data$tmin)); return(number.da
 #' Please do not use the 'GSL_first', 'GSL_max', or 'GSL_sum' modes for
 #' anything other than testing purposes at this time, nor should you rely on
 #' this parameter being present in future versions of climdex.pcic.
-#' @seealso \code{\link{growing.season.length}},
 #' @references \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
 #' @keywords ts climate
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
@@ -349,6 +352,10 @@ climdex.gsl <- function(ci, gsl.mode = c("GSL", "GSL_first", "GSL_max", "GSL_sum
 #' @title Warm Spell Duration Index
 #'
 #' @description This function computes the climdex index WSDI.
+#' @param ci Object of type climdexInput.
+#' @param spells.can.span.years specifies whether spells can cross
+#' year boundaries -- i.e., span years. The default for this is the same as
+#' fclimdex.
 #' 
 #' @details
 #' This function takes a climdexInput object as input and computes the climdex
@@ -360,9 +367,6 @@ climdex.gsl <- function(ci, gsl.mode = c("GSL", "GSL_first", "GSL_max", "GSL_sum
 #' percentile of daily maximum temperature for a 5-day running window
 #' surrounding this day during the baseline period.
 #' 
-#' The \code{spells.can.span.years} option specifies whether spells can cross
-#' year boundaries -- i.e., span years. The default for this is the same as
-#' fclimdex.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 #' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
@@ -372,6 +376,11 @@ climdex.wsdi <- function(ci, spells.can.span.years=FALSE) { stopifnot(!is.null(c
 #' @title Cold Spell Duration Index
 #' 
 #' @description This function computes the climdex index CSDI.
+#' 
+#' @param ci Object of type climdexInput.
+#' @param spells.can.span.years specifies whether spells can cross
+#' year boundaries -- i.e., span years. The default for this is the same as
+#' fclimdex.
 #' 
 #' @details
 #' This function takes a climdexInput object as input and computes the climdex
@@ -383,9 +392,6 @@ climdex.wsdi <- function(ci, spells.can.span.years=FALSE) { stopifnot(!is.null(c
 #' the 10th percentile of daily minimum temperature for a 5-day running window
 #' surrounding this day during the baseline period.
 #' 
-#' The \code{spells.can.span.years} option specifies whether spells can cross
-#' year boundaries -- i.e., span years. The default for this is the same as
-#' fclimdex.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 #' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
@@ -481,6 +487,8 @@ climdex.tnn <- function(ci, freq = c("monthly", "annual", "seasonal"), include.e
 #' This function takes a climdexInput object as input and computes the
 #' monthly, seasonal or annual percent of values below the 10th percentile of baseline
 #' daily minimum temperature.
+#' @param ci Object of type climdexInput.
+#' @param freq Time frequency to aggregate to.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 #' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
@@ -494,6 +502,8 @@ climdex.tn10p <- function(ci, freq=c("monthly", "annual", "seasonal")) { stopifn
 #' This function takes a climdexInput object as input and computes the
 #' monthly, seasonal or annual percent of values below the 10th percentile of baseline
 #' daily maximum temperature.
+#' @param ci Object of type climdexInput.
+#' @param freq Time frequency to aggregate to.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 #' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
@@ -507,6 +517,8 @@ climdex.tx10p <- function(ci, freq=c("monthly", "annual", "seasonal")) { stopifn
 #' This function takes a climdexInput object as input and computes the
 #' monthly, seasonal or annual percent of values above the 90th percentile of baseline
 #' daily minimum temperature.
+#' @param ci Object of type climdexInput.
+#' @param freq Time frequency to aggregate to.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 #' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>
@@ -520,7 +532,8 @@ climdex.tn90p <- function(ci, freq=c("monthly", "annual", "seasonal")) { stopifn
 #' This function takes a climdexInput object as input and computes the
 #' monthly, seasonal or annual percent of values above the 90th percentile of baseline
 #' daily maximum temperature.
-#' 
+#' @param ci Object of type climdexInput.
+#' @param freq Time frequency to aggregate to.
 #' @references This function is from the `pacificclimate/climdex.pcic` repository. 
 #' The `climdex.pcic` package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 #' For more information, visit the repository: <https://github.com/pacificclimate/climdex.pcic>

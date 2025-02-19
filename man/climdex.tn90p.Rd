@@ -6,6 +6,11 @@
 \usage{
 climdex.tn90p(ci, freq = c("monthly", "annual", "seasonal"))
 }
+\arguments{
+\item{ci}{Object of type climdexInput.}
+
+\item{freq}{Time frequency to aggregate to.}
+}
 \description{
 This function computes the climdex index TN90p.
 }

@@ -123,7 +123,7 @@ valid.climdexInput <- function(object) {
 #' \item{max.missing.days}{Maximum number of missing days of data for annual, seasonal
 #' and monthly data.}
 #' }
-#' @seealso \code{\link{climdexInput.csv}}, \code{\link{climdexInput.raw}}.
+#' @seealso \code{\link{climdexInput.raw}}.
 #' @keywords climate ts
 #' @examples
 #' library(PCICt)
@@ -192,6 +192,7 @@ setClass("climdexInput",
 #' of data which must be present for a quantile to be calculated for a 
 #' particular day. If the fraction of data present is less than this threshold, 
 #' the quantile for that day will be set to NA.
+#' @param min.base.data.fraction.present TODO
 #' 
 #' @details
 #' This function takes input climate data at daily resolution, and produces as
@@ -213,7 +214,6 @@ setClass("climdexInput",
 #' For precipitation variables, there is a named vector of quantiles, consisting
 #' of at least q95 and q99. 
 #' 
-#' @seealso \code{\link{climdex.pcic-package}}, \code{\link{strptime}}.
 #' @keywords ts climate
 #' @references For Climdex Indices: \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
 #' This function is from the `pacificclimate/climdex.pcic` repository. 
@@ -234,17 +234,17 @@ setClass("climdexInput",
 #' ## ready to go.
 #' 
 #' ## Parse the dates into PCICt.
-#' tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
+#' #tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+#' #"jday")]), format="%Y %j", cal="gregorian")
+#' #tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+#' #"jday")]), format="%Y %j", cal="gregorian")
+#' #prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+#' #"jday")]), format="%Y %j", cal="gregorian")
 #' 
 #' ## Load the data in.
-#' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
+#' #ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
+#' #ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
+#' #tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 #' @export 
 climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, tmin.dates=NULL, prec.dates=NULL,
                              base.range=c(1961, 1990), n=5, northern.hemisphere=TRUE,
@@ -626,7 +626,7 @@ running_quantile_windowed_R <- function(data, n, q, dpy, min.fraction) {
     values <- values[!is.na(values)]  # Remove missing values
     
     if (length(values) / length(indices) >= min.fraction) {
-      ret[, i] <- quantile(values, probs = q, na.rm = TRUE)
+      ret[, i] <- stats::quantile(values, probs = q, na.rm = TRUE)
     }
   }
   
@@ -647,7 +647,7 @@ running_quantile_windowed_bootstrap_R <- function(data, n, qtiles, dpy, min.frac
       window_values <- window_values[!is.na(window_values)]
       
       if (length(window_values) / length(sampled_years) >= min.fraction.present) {
-        result[i, , b, ] <- quantile(window_values, probs = qtiles, na.rm = TRUE)
+        result[i, , b, ] <- stats::quantile(window_values, probs = qtiles, na.rm = TRUE)
       }
     }
   }

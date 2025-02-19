@@ -115,7 +115,7 @@ tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 
 }
 \seealso{
-\code{\link{climdexInput.csv}}, \code{\link{climdexInput.raw}}.
+\code{\link{climdexInput.raw}}.
 }
 \keyword{climate}
 \keyword{ts}

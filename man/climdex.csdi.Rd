@@ -6,6 +6,13 @@
 \usage{
 climdex.csdi(ci, spells.can.span.years = FALSE)
 }
+\arguments{
+\item{ci}{Object of type climdexInput.}
+
+\item{spells.can.span.years}{specifies whether spells can cross
+year boundaries -- i.e., span years. The default for this is the same as
+fclimdex.}
+}
 \description{
 This function computes the climdex index CSDI.
 }
@@ -18,10 +25,6 @@ each year which are part of a "cold spell". A "cold spell" is defined as a
 sequence of 6 or more days in which the daily minimum temperature is below
 the 10th percentile of daily minimum temperature for a 5-day running window
 surrounding this day during the baseline period.
-
-The \code{spells.can.span.years} option specifies whether spells can cross
-year boundaries -- i.e., span years. The default for this is the same as
-fclimdex.
 }
 \references{
 This function is from the \code{pacificclimate/climdex.pcic} repository.

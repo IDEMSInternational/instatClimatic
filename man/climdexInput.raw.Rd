@@ -66,6 +66,8 @@ number of days that can be missing in a month and 'seasonal' (the
 number of days that can be missing in a season. If one month in a year fails
 the test, the corresponding year will be omitted.}
 
+\item{min.base.data.fraction.present}{TODO}
+
 \item{min.base.fraction.present}{the minimum fraction
 of data which must be present for a quantile to be calculated for a
 particular day. If the fraction of data present is less than this threshold,
@@ -110,17 +112,17 @@ library(PCICt)
 ## ready to go.
 
 ## Parse the dates into PCICt.
-tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-"jday")]), format="\%Y \%j", cal="gregorian")
-tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-"jday")]), format="\%Y \%j", cal="gregorian")
-prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-"jday")]), format="\%Y \%j", cal="gregorian")
+#tmax.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+#"jday")]), format="\%Y \%j", cal="gregorian")
+#tmin.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+#"jday")]), format="\%Y \%j", cal="gregorian")
+#prec.dates <- PCICt::as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+#"jday")]), format="\%Y \%j", cal="gregorian")
 
 ## Load the data in.
-ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
+#ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
+#ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
+#tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 }
 \references{
 For Climdex Indices: \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
@@ -128,9 +130,6 @@ This function is from the \code{pacificclimate/climdex.pcic} repository.
 The \code{climdex.pcic} package was developed and maintained by the Pacific Climate Impacts Consortium (PCIC).
 For more information, visit the repository: \url{https://github.com/pacificclimate/climdex.pcic}
 Special thanks to the contributors of the \code{climdex.pcic} package for their efforts in climate data analysis.
-}
-\seealso{
-\code{\link{climdex.pcic-package}}, \code{\link{strptime}}.
 }
 \keyword{climate}
 \keyword{ts}

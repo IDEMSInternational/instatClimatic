@@ -63,8 +63,5 @@ The \code{climdex.pcic} package was developed and maintained by the Pacific Clim
 For more information, visit the repository: \url{https://github.com/pacificclimate/climdex.pcic}
 Special thanks to the contributors of the \code{climdex.pcic} package for their efforts in climate data analysis.
 }
-\seealso{
-\code{\link{growing.season.length}},
-}
 \keyword{climate}
 \keyword{ts}

@@ -6,6 +6,13 @@
 \usage{
 climdex.wsdi(ci, spells.can.span.years = FALSE)
 }
+\arguments{
+\item{ci}{Object of type climdexInput.}
+
+\item{spells.can.span.years}{specifies whether spells can cross
+year boundaries -- i.e., span years. The default for this is the same as
+fclimdex.}
+}
 \description{
 This function computes the climdex index WSDI.
 }
@@ -18,10 +25,6 @@ which are part of a "warm spell". A "warm spell" is defined as a sequence of
 6 or more days in which the daily maximum temperature exceeds the 90th
 percentile of daily maximum temperature for a 5-day running window
 surrounding this day during the baseline period.
-
-The \code{spells.can.span.years} option specifies whether spells can cross
-year boundaries -- i.e., span years. The default for this is the same as
-fclimdex.
 }
 \references{
 This function is from the \code{pacificclimate/climdex.pcic} repository.
