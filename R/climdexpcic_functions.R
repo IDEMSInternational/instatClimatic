@@ -141,6 +141,8 @@ valid.climdexInput <- function(object) {
 #' #ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
 #' #tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 #' 
+#' @import PCICt
+#' 
 #' @export
 setClass("climdexInput",
          representation(data = "list",
