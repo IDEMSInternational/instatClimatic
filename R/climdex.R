@@ -61,7 +61,7 @@ climdex <- function(data, station, date, year, month, prec, tmax, tmin, indices,
     df_list <- vector(mode = "list", length = length(stations))
     for (s in seq_along(stations)) {
       df_station <- data %>% dplyr::filter(.data[[station]] == stations[s])
-      ci <- climdex.pcic::climdexInput.raw(prec = df_station[[prec]], tmax = df_station[[tmax]], tmin = df_station[[tmin]], 
+      ci <- climdexInput.raw(prec = df_station[[prec]], tmax = df_station[[tmax]], tmin = df_station[[tmin]], 
                                            base.range = base.range, northern.hemisphere = northern.hemisphere, 
                                            temp.qtiles = temp.qtiles, prec.qtiles = prec.qtiles, 
                                            max.missing.days = max.missing.days,
@@ -76,7 +76,7 @@ climdex <- function(data, station, date, year, month, prec, tmax, tmin, indices,
     df_out <- dplyr::bind_rows(df_list, .id = station)
   }
   else {
-    ci <- climdex.pcic::climdexInput.raw(prec = data[[prec]], tmax = data[[tmax]], tmin = data[[tmin]], 
+    ci <- climdexInput.raw(prec = data[[prec]], tmax = data[[tmax]], tmin = data[[tmin]], 
                                          base.range = c(1961, 1990), northern.hemisphere = TRUE, 
                                          temp.qtiles = c(0.1, 0.9), prec.qtiles = c(0.95, 0.99), 
                                          max.missing.days = c(annual = 15, monthly = 3), 
