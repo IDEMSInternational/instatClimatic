@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' fourier_series(3, 5, 2)
+#' fourier_series(10, 5, 2)
 fourier_series <- function(x, n, period) {
   p2 <- "2 * pi"
   h <-  seq_len(n)
