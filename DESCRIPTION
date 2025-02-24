@@ -1,6 +1,6 @@
 Package: instatClimatic
 Title: A set of climatic functions used in R-Instat
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person("Danny", "Parsons", , role = "aut"),
     person("Lily", "Clements", , "lily@idems.international", role = c("aut", "cre"),
