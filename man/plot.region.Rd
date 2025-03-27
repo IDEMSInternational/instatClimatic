@@ -128,3 +128,26 @@
 \description{
 This function generates a map of the selected product. It can plot either a certain year/month from a data file with multiple time steps or a single 2D field. The function requires the data to be prepared using the R script "Prep.Data.R" or "Apply.Function.R".
 }
+\examples{
+# Example usage
+# lon <- read.csv("lon.csv")
+# lat <- read.csv("lat.csv")
+# product <- read.csv("product.csv")
+# time <- read.csv("time.csv")
+# plot.region(lon, lat, product, time)
+
+# Example usage with additional parameters
+# plot.region(lon, lat, product, time, time_point = as.Date("2002-01-01"),
+#             add2title = "CM SAF, ", lonmin = -10, lonmax = 10, latmin = 35,
+#             latmax = 45, height = 800, width = 800, plot.ano = TRUE,
+#             set.col.breaks = TRUE, brk.set = seq(240,310,10),
+#             colmin0 = 240, colmax0 = 310, ncol = 10, plotHighRes = TRUE,
+#             plotCoastline = FALSE, plotCountries = FALSE,
+#             plotRivers = TRUE, contour.thick = 3, plotCities = FALSE,
+#             pch.cities = 16, cex.cities = 1.5, label.cities = FALSE,
+#             plotCapitals = 2, cex.label.cities = 0.8, dlat = 0.5,
+#             plotOwnLocations = TRUE, loc_lon = c(0, 2, 4),
+#             loc_lat = c(40, 42, 44), loc_name = c("Location A",
+#             "Location B", "Location C"), label_pos = 3,
+#             variable = "Precipitation", level = 2, CTY.type = 2)
+}
