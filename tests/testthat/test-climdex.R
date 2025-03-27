@@ -268,7 +268,7 @@ test_that("climdex output snapshot is stable", {
 })
 
 test_that("indices return plausible values", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("fd", "r10mm", "gsl", "cdd")
   
   out <- climdex(
@@ -290,7 +290,7 @@ test_that("indices return plausible values", {
 })
 
 test_that("climdex works with southern hemisphere and different base range", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("gsl")
   
   out <- climdex(
@@ -312,7 +312,7 @@ test_that("climdex works with southern hemisphere and different base range", {
 })
 
 test_that("climdex handles all-NA rows", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   data$tmax[1:10] <- NA
   data$tmin[1:10] <- NA
   data$precip[1:10] <- NA
@@ -336,7 +336,7 @@ test_that("climdex handles all-NA rows", {
 })
 
 test_that("climdex computes indices for a single station", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("fd", "su", "r10mm", "sdii", "gsl")
   
   out <- climdex(
@@ -356,7 +356,7 @@ test_that("climdex computes indices for a single station", {
 })
 
 test_that("climdex fails when monthly frequency is selected without month", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("sdii")
   
   expect_error(
@@ -376,7 +376,7 @@ test_that("climdex fails when monthly frequency is selected without month", {
 })
 
 test_that("climdex fails when year-only indices used with monthly freq", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("fd", "tr")
   
   expect_error(
@@ -397,7 +397,7 @@ test_that("climdex fails when year-only indices used with monthly freq", {
 })
 
 test_that("climdex can handle multiple stations", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   data$station <- rep(c("S1", "S2"), length.out = nrow(data))
   indices <- c("fd", "su")
   
@@ -419,7 +419,7 @@ test_that("climdex can handle multiple stations", {
 })
 
 test_that("climdex handles gsl mode and spell threshold", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("gsl", "cdd", "cwd")
   
   out <- climdex(
@@ -444,7 +444,7 @@ test_that("climdex handles gsl mode and spell threshold", {
 ################################################################################
 
 test_that("climdex precipitation-based indices run correctly", {
-  synthetic_climate <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  synthetic_climate <- read.csv("testdata/synthetic_climate.csv")
   
   # Create PCICt dates
   dates <- PCICt::as.PCICt(as.character(synthetic_climate$date), cal = "gregorian")
@@ -484,7 +484,7 @@ test_that("climdex precipitation-based indices run correctly", {
   expect_s3_class(climdex.cwd(ci, include.exact.dates = TRUE), "data.frame")
 })
 
-data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+data <- read.csv("testdata/synthetic_climate.csv")
 dates <- as.PCICt(as.character(data$date), cal = "gregorian")
 
 ci <- climdexInput.raw(
@@ -554,7 +554,7 @@ test_that("climdex.dtr returns expected vector", {
 ################################################################################
 
 test_that("climdex_single_station computes all indices with expected structure", {
-  df <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  df <- read.csv("testdata/synthetic_climate.csv")
   dates_pcic <- PCICt::as.PCICt(as.character(df$date), cal = "gregorian")
   ci <- climdexInput.raw(
     tmax = df$tmax, tmin = df$tmin, prec = df$precip,
