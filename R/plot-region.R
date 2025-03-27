@@ -43,7 +43,6 @@
 #' @param ... Additional parameters to read in. 
 #'
 #' @export
-#' @method plot region
 #'
 #' @examples
 #' # Example usage
