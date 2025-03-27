@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/IDEMSInternational/instatClimatic/workflows/R-CMD-check/badge.svg)](https://github.com/IDEMSInternational/instatClimatic/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/IDEMSInternational/instatClimatic/branch/main/graph/badge.svg)](https://app.codecov.io/gh/IDEMSInternational/instatClimatic?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
