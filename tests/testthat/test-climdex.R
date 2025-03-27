@@ -183,15 +183,15 @@ test_that("valid.climdexInput errors on mismatched lengths", {
   base.range <- as.PCICt(c("1980-01-01", "1990-12-31"), cal = "gregorian")
   
   expect_error(new("climdexInput",
-            data = data,
-            quantiles = new.env(),
-            namasks = namasks,
-            dates = dates,
-            jdays = jdays,
-            base.range = base.range,
-            date.factors = df,
-            northern.hemisphere = TRUE,
-            max.missing.days = c(annual = 15, monthly = 3, seasonal = 6)
+                   data = data,
+                   quantiles = new.env(),
+                   namasks = namasks,
+                   dates = dates,
+                   jdays = jdays,
+                   base.range = base.range,
+                   date.factors = df,
+                   northern.hemisphere = TRUE,
+                   max.missing.days = c(annual = 15, monthly = 3, seasonal = 6)
   ), "Data fields, dates, and date factors must all be of the same length")
 })
 
@@ -207,15 +207,15 @@ test_that("valid.climdexInput errors if namasks are incomplete", {
   namasks <- list(annual = list(), monthly = list(), seasonal = list())
   
   expect_error(new("climdexInput",
-            data = data,
-            quantiles = new.env(),
-            namasks = namasks,
-            dates = dates,
-            jdays = jdays,
-            base.range = base.range,
-            date.factors = df,
-            northern.hemisphere = TRUE,
-            max.missing.days = c(annual = 15, monthly = 3, seasonal = 6)), "NA mask for monthly, seasonal and annual must contain data for all variables supplied")
+                   data = data,
+                   quantiles = new.env(),
+                   namasks = namasks,
+                   dates = dates,
+                   jdays = jdays,
+                   base.range = base.range,
+                   date.factors = df,
+                   northern.hemisphere = TRUE,
+                   max.missing.days = c(annual = 15, monthly = 3, seasonal = 6)), "NA mask for monthly, seasonal and annual must contain data for all variables supplied")
 })
 
 test_that("valid.climdexInput errors if northern.hemisphere is not length 1", {
@@ -234,15 +234,15 @@ test_that("valid.climdexInput errors if northern.hemisphere is not length 1", {
   )
   
   expect_error(new("climdexInput",
-            data = data,
-            quantiles = new.env(),
-            namasks = namasks,
-            dates = dates,
-            jdays = jdays,
-            base.range = base.range,
-            date.factors = df,
-            northern.hemisphere = c(TRUE, FALSE),
-            max.missing.days = c(annual = 15, monthly = 3, seasonal = 6)), "northern.hemisphere must be of length 1")
+                   data = data,
+                   quantiles = new.env(),
+                   namasks = namasks,
+                   dates = dates,
+                   jdays = jdays,
+                   base.range = base.range,
+                   date.factors = df,
+                   northern.hemisphere = c(TRUE, FALSE),
+                   max.missing.days = c(annual = 15, monthly = 3, seasonal = 6)), "northern.hemisphere must be of length 1")
 })
 
 
@@ -624,4 +624,116 @@ test_that("climdex_single_station computes temperature-based indices correctly",
   expect_true(all(sapply(out[-1], is.numeric)))
   expect_true(all(out$year %in% df$year))
 })
+
+test_that("climdex fallback block without station works with various year/month formats", {
+  dates <- seq(as.Date("1981-01-01"), as.Date("1981-12-31"), by = "day")
+  n <- length(dates)
+  
+  #for (year_col in c("year_num", "year_factor", "year_char")) {
+  #  for (month_col in c("month_num", "month_factor", "month_char")) {
+  
+  year_col <- "year_num"
+  month_col <- "month_num"
+  df <- data.frame(
+    date = dates,
+    year_num = as.numeric(format(dates, "%Y")),
+    year_factor = factor(format(dates, "%Y")),
+    year_char = as.character(format(dates, "%Y")),
+    month_num = as.numeric(format(dates, "%m")),
+    month_factor = factor(format(dates, "%m"), levels = sprintf("%02d", 1:12), ordered = TRUE),
+    month_char = month.abb[as.numeric(format(dates, "%m"))],
+    tmax = 25 + 5 * sin(2 * pi * (1:n) / 365),
+    tmin = 15 + 5 * sin(2 * pi * (1:n) / 365),
+    precip = rgamma(n, shape = 2, scale = 1.5)
+  )
+  
+  expect_error(climdex(
+    data = df,
+    date = "date",
+    year = year_col,
+    month = month_col,
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = c("sdii"),
+    freq = "monthly"), "Some indices selected are not available on a monthly frequency.")
+  
+  ci_1 <- climdex(
+    data = df,
+    date = "date",
+    year = year_col,
+    month = month_col,
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = c("rx1day"),
+    freq = "monthly")
+  
+  expect_s3_class(ci_1, "data.frame")
+  expect_true("rx1day" %in% names(ci_1))
+  expect_equal(length(unique(ci_1[[year_col]])), 1)
+  expect_equal(length(unique(ci_1[[month_col]])), 12)
+  
+  ###
+  year_col <- "year_factor"
+  month_col <- "month_factor"
+  df <- data.frame(
+    date = dates,
+    year_num = as.numeric(format(dates, "%Y")),
+    year_factor = factor(format(dates, "%Y")),
+    year_char = as.character(format(dates, "%Y")),
+    month_num = as.numeric(format(dates, "%m")),
+    month_factor = factor(format(dates, "%m"), levels = sprintf("%02d", 1:12), ordered = TRUE),
+    month_char = month.abb[as.numeric(format(dates, "%m"))],
+    tmax = 25 + 5 * sin(2 * pi * (1:n) / 365),
+    tmin = 15 + 5 * sin(2 * pi * (1:n) / 365),
+    precip = rgamma(n, shape = 2, scale = 1.5)
+  )
+  
+  ci_2 <- climdex(
+    data = df,
+    date = "date",
+    year = year_col,
+    month = month_col,
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = c("rx1day"),
+    freq = "monthly")
+  expect_s3_class(ci_2, "data.frame")
+  expect_true("rx1day" %in% names(ci_2))
+  expect_equal(length(unique(ci_2[[year_col]])), 1)
+  expect_equal(length(unique(ci_2[[month_col]])), 12)
+  
+  ###
+  year_col <- "year_char"
+  month_col <- "month_char"
+  df <- data.frame(
+    date = dates,
+    year_num = as.numeric(format(dates, "%Y")),
+    year_factor = factor(format(dates, "%Y")),
+    year_char = as.character(format(dates, "%Y")),
+    month_num = as.numeric(format(dates, "%m")),
+    month_factor = factor(format(dates, "%m"), levels = sprintf("%02d", 1:12), ordered = TRUE),
+    month_char = month.abb[as.numeric(format(dates, "%m"))],
+    tmax = 25 + 5 * sin(2 * pi * (1:n) / 365),
+    tmin = 15 + 5 * sin(2 * pi * (1:n) / 365),
+    precip = rgamma(n, shape = 2, scale = 1.5)
+  )
+  
+  expect_error(climdex(
+    data = df,
+    date = "date",
+    year = year_col,
+    month = month_col,
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = c("rx1day"),
+    freq = "monthly"))
+  
+})
+  
+  
+  
 
