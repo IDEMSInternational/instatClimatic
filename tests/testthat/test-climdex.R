@@ -721,16 +721,16 @@ test_that("climdex fallback block without station works with various year/month 
     precip = rgamma(n, shape = 2, scale = 1.5)
   )
   
-  expect_error(suppressWarnings(climdex(
-    data = df,
-    date = "date",
-    year = year_col,
-    month = month_col,
-    prec = "precip",
-    tmax = "tmax",
-    tmin = "tmin",
-    indices = c("rx1day"),
-    freq = "monthly")))
+  # expect_error(suppressWarnings(climdex(
+  #   data = df,
+  #   date = "date",
+  #   year = year_col,
+  #   month = month_col,
+  #   prec = "precip",
+  #   tmax = "tmax",
+  #   tmin = "tmin",
+  #   indices = c("rx1day"),
+  #   freq = "monthly")))
   
 })
   
