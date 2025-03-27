@@ -20,5 +20,5 @@ The Fourier series expression as a character string.
 This function calculates the Fourier series for a given input \code{x} with a specified number of terms \code{n} and period \code{period}.
 }
 \examples{
-fourier_series(3, 5, 2)
+fourier_series(10, 5, 2)
 }
