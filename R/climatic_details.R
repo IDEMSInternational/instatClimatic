@@ -148,8 +148,12 @@ climatic_details <- function(data, date, elements, stations,
     list_tables[[i]] <- detail.table.year
   }
   
-  detail.table.all <- plyr::ldply(list_tables, data.frame) %>%
-    dplyr::mutate(Level = instatExtras::make_factor(Level))
+  detail.table.all <- plyr::ldply(list_tables, data.frame)
+  
+  if ("Level" %in% names(detail.table.all)){
+    detail.table.all <- detail.table.all %>%
+      dplyr::mutate(Level = instatExtras::make_factor(Level))
+  }
   
   return(detail.table.all)
   
