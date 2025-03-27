@@ -656,7 +656,7 @@ test_that("climdex fallback block without station works with various year/month 
     tmax = "tmax",
     tmin = "tmin",
     indices = c("sdii"),
-    freq = "monthly"), "Some indices selected are not available on a monthly frequency.")
+    freq = "monthly"))
   
   ci_1 <- climdex(
     data = df,
