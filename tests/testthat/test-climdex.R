@@ -552,3 +552,85 @@ test_that("climdex.dtr returns expected vector", {
 })
 
 ################################################################################
+
+test_that("climdex_single_station computes all indices with expected structure", {
+  df <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  dates_pcic <- PCICt::as.PCICt(as.character(df$date), cal = "gregorian")
+  ci <- climdex.pcic::climdexInput.raw(
+    tmax = df$tmax, tmin = df$tmin, prec = df$precip,
+    tmax.dates = dates_pcic, tmin.dates = dates_pcic, prec.dates = dates_pcic,
+    base.range = c(1981, 1990), northern.hemisphere = TRUE
+  )
+  
+  all_indices <- c(
+    "fd", "su", "id", "tr", "wsdi", "csdi", "gsl", "txx", "txn", "tnx", "tnn",
+    "tn10p", "tx10p", "tn90p", "tx90p", "dtr", "rx1day", "rx5day", "sdii",
+    "r10mm", "r20mm", "rnnmm", "cdd", "cwd", "r95ptot", "r99ptot", "prcptot"
+  )
+  
+  # Annual frequency
+  df_annual <- suppressWarnings(climdex_single_station(ci = ci, freq = "annual", indices = all_indices, year = "year"))
+  expect_s3_class(df_annual, "data.frame")
+  expect_true(all(c("year", all_indices[!all_indices %in% "rnnmm"]) %in% names(df_annual)))
+  expect_true(any(grepl("rnnmm_", names(df_annual))))
+  
+  # Monthly frequency subset
+  df_monthly <- suppressWarnings(climdex_single_station(ci = ci, freq = "monthly", indices = c("txx", "tn10p", "dtr"), year = "year", month = "month"))
+  expect_s3_class(df_monthly, "data.frame")
+  expect_true(all(c("year", "month", "txx", "tn10p", "dtr") %in% names(df_monthly)))
+})
+
+test_that("climdex_single_station throws errors on bad input", {
+  ci <- climdexInput.raw(
+    tmax = df$tmax, tmin = df$tmin, prec = df$precip,
+    tmax.dates = PCICt::as.PCICt(as.character(df$date), cal = "gregorian"),
+    tmin.dates = PCICt::as.PCICt(as.character(df$date), cal = "gregorian"),
+    prec.dates = PCICt::as.PCICt(as.character(df$date), cal = "gregorian"),
+    base.range = c(1981, 1990), northern.hemisphere = TRUE
+  )
+  
+  expect_error(climdex_single_station(ci = ci, indices = "fd", year = "year", freq = "monthly"), "month is required")
+  expect_error(climdex_single_station(ci = ci, freq = "annual", year = "year"), "No indices specified")
+  expect_error(climdex_single_station(ci = ci, indices = "invalid", year = "year"), "not recognised")
+})
+
+test_that("climdex_single_station computes temperature-based indices correctly", {
+  # Use a wide date range to support quantile-based indices
+  dates <- seq(as.Date("1980-01-01"), as.Date("1990-12-31"), by = "day")
+  n <- length(dates)
+  
+  df <- data.frame(
+    date = dates,
+    year = as.numeric(format(dates, "%Y")),
+    month = as.numeric(format(dates, "%m")),
+    tmax = rnorm(n, 30, 5),
+    tmin = rnorm(n, 20, 5),
+    prec = rexp(n, 1 / 5)
+  )
+  df$tavg <- (df$tmax + df$tmin) / 2
+  
+  ci <- climdexInput.raw(
+    tmin = df$tmin,
+    tmax = df$tmax,
+    prec = df$prec,
+    tmin.dates = PCICt::as.PCICt(as.character(df$date), cal = "gregorian"),
+    tmax.dates = PCICt::as.PCICt(as.character(df$date), cal = "gregorian"),
+    prec.dates = PCICt::as.PCICt(as.character(df$date), cal = "gregorian"),
+    base.range = c(1981, 1990),
+    temp.qtiles = c(0.1, 0.9),
+    max.missing.days = c(annual = 40)
+  )
+  
+  out <- climdex_single_station(
+    ci = ci,
+    freq = "annual",
+    indices = c("fd", "su", "tn10p", "tx90p", "wsdi", "csdi", "gsl", "dtr"),
+    year = "year"
+  )
+  
+  expect_s3_class(out, "data.frame")
+  expect_named(out, c("year", "fd", "su", "tn10p", "tx90p", "wsdi", "csdi", "gsl", "dtr"))
+  expect_equal(nrow(out), length(unique(df$year)))
+  expect_true(all(sapply(out[-1], is.numeric)))
+  expect_true(all(out$year %in% df$year))
+})

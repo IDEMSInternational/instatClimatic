@@ -11,7 +11,7 @@ climdex_single_station(
   year,
   month,
   spells.can.span.years = FALSE,
-  gsl.mode = gsl.mode,
+  gsl.mode = "GSL",
   threshold = 1
 )
 }
