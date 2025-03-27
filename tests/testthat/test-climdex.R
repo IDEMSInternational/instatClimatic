@@ -249,7 +249,7 @@ test_that("valid.climdexInput errors if northern.hemisphere is not length 1", {
 #usethis::use_data_raw("synthetic_climate", open = FALSE)
 
 test_that("climdex output snapshot is stable", {
-  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data <- read.csv("testdata/synthetic_climate.csv")
   indices <- c("fd", "su", "r10mm", "sdii", "gsl")
   
   out <- climdex(
