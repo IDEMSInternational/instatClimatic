@@ -245,3 +245,200 @@ test_that("valid.climdexInput errors if northern.hemisphere is not length 1", {
 
 
 
+#######################################################################################################################
+#usethis::use_data_raw("synthetic_climate", open = FALSE)
+
+test_that("climdex output snapshot is stable", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("fd", "su", "r10mm", "sdii", "gsl")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices
+  )
+  
+  expect_equal(class(out), "data.frame")
+})
+
+test_that("indices return plausible values", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("fd", "r10mm", "gsl", "cdd")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices
+  )
+  
+  expect_true(all(out$fd >= 0, na.rm = TRUE))
+  expect_true(all(out$r10mm >= 0, na.rm = TRUE))
+  expect_true(all(out$gsl >= 0, na.rm = TRUE))
+  expect_true(all(out$cdd >= 0, na.rm = TRUE))
+})
+
+test_that("climdex works with southern hemisphere and different base range", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("gsl")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices,
+    northern.hemisphere = FALSE,
+    base.range = c(1981, 1982)
+  )
+  
+  expect_true("gsl" %in% names(out))
+  expect_true(all(out$gsl >= 0, na.rm = TRUE))
+})
+
+test_that("climdex handles all-NA rows", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data$tmax[1:10] <- NA
+  data$tmin[1:10] <- NA
+  data$precip[1:10] <- NA
+  
+  indices <- c("fd", "cdd")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices
+  )
+  
+  expect_s3_class(out, "data.frame")
+  expect_true("cdd" %in% names(out))
+})
+
+test_that("climdex computes indices for a single station", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("fd", "su", "r10mm", "sdii", "gsl")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices
+  )
+  
+  expect_s3_class(out, "data.frame")
+  expect_true(all(c("year", "fd", "su", "r10mm", "sdii", "gsl") %in% colnames(out)))
+})
+
+test_that("climdex fails when monthly frequency is selected without month", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("sdii")
+  
+  expect_error(
+    climdex(
+      data = data,
+      station = "station",
+      date = "date",
+      year = "year",
+      prec = "precip",
+      tmax = "tmax",
+      tmin = "tmin",
+      indices = indices,
+      freq = "monthly"
+    ),
+    "month is required for freq = 'monthly'"
+  )
+})
+
+test_that("climdex fails when year-only indices used with monthly freq", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("fd", "tr")
+  
+  expect_error(
+    climdex(
+      data = data,
+      station = "station",
+      date = "date",
+      year = "year",
+      month = "month",
+      prec = "precip",
+      tmax = "tmax",
+      tmin = "tmin",
+      indices = indices,
+      freq = "monthly"
+    ),
+    "Some indices selected are not available on a monthly frequency"
+  )
+})
+
+test_that("climdex can handle multiple stations", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  data$station <- rep(c("S1", "S2"), length.out = nrow(data))
+  indices <- c("fd", "su")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices
+  )
+  
+  expect_s3_class(out, "data.frame")
+  expect_true(all(c("station", "year", "fd", "su") %in% names(out)))
+  expect_true(all(unique(out$station) %in% c("S1", "S2")))
+})
+
+test_that("climdex handles gsl mode and spell threshold", {
+  data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  indices <- c("gsl", "cdd", "cwd")
+  
+  out <- climdex(
+    data = data,
+    station = "station",
+    date = "date",
+    year = "year",
+    month = "month",
+    prec = "precip",
+    tmax = "tmax",
+    tmin = "tmin",
+    indices = indices,
+    gsl.mode = "GSL",
+    threshold = 5
+  )
+  
+  expect_true("gsl" %in% names(out))
+  expect_true("cdd" %in% names(out))
+  expect_true("cwd" %in% names(out))
+})
+
+
