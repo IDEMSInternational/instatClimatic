@@ -121,6 +121,31 @@ library(PCICt)
 #ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
 #ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
 #tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
+# Simulated daily dates
+dates <- seq(as.Date("1981-01-01"), as.Date("1982-12-31"), by = "day")
+date_chars <- format(dates, "\%Y-\%m-\%d")
+dates.pcict <- PCICt::as.PCICt(date_chars, format = "\%Y-\%m-\%d", cal = "gregorian")
+
+# Simulate data with some NAs
+set.seed(42)
+tmax <- 25 + rnorm(length(dates))
+tmin <- 15 + rnorm(length(dates))
+prec <- runif(length(dates), 0, 10)
+tmax[seq(1, length(tmax), 50)] <- NA
+tmin[seq(1, length(tmin), 50)] <- NA
+prec[seq(1, length(prec), 50)] <- NA
+
+# Create the object
+ci <- climdexInput.raw(
+  tmax = tmax, tmin = tmin, prec = prec,
+  tmax.dates = dates.pcict,
+  tmin.dates = dates.pcict,
+  prec.dates = dates.pcict,
+  base.range = c(1981, 1990),
+  northern.hemisphere = TRUE
+)
+
+ci
 }
 \references{
 For Climdex Indices: \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}

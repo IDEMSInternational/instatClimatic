@@ -248,7 +248,7 @@ setClass("climdexInput",
 #' #tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 #' @export 
 #' 
-#' @example 
+#' @examples
 #' # Simulated daily dates
 #' dates <- seq(as.Date("1981-01-01"), as.Date("1982-12-31"), by = "day")
 #' date_chars <- format(dates, "%Y-%m-%d")

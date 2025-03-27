@@ -39,10 +39,10 @@ A data frame containing the calculated climate indices for the specified station
 This function calculates climate indices for a single weather station based on the provided parameters. The function utilizes the climdex.pcic package to compute various climate indices. The indices can be calculated either on an annual or monthly basis, depending on the specified frequency.
 }
 \examples{
-df <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
-dates_pcic <- PCICt::as.PCICt(as.character(df$date), cal = "gregorian")
+data(climdex_data)
+dates_pcic <- PCICt::as.PCICt(as.character(climdex_data$date), cal = "gregorian")
 ci <- climdex.pcic::climdexInput.raw(
- tmax = df$tmax, tmin = df$tmin, prec = df$precip,
+ tmax = climdex_data$tmax, tmin = climdex_data$tmin, prec = climdex_data$precip,
   tmax.dates = dates_pcic, tmin.dates = dates_pcic, prec.dates = dates_pcic,
   base.range = c(1981, 1990), northern.hemisphere = TRUE
 )
