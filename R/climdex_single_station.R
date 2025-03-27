@@ -31,9 +31,25 @@
 #' @export
 #'
 #' @examples
-#'#data <- read.csv("climate_data.csv")
-#'#climdex_single_station(data, freq = "annual", indices = c("fd", "su"),
-#'# year = "Year")
+#' data(climdex_data)
+#' dates_pcic <- PCICt::as.PCICt(as.character(climdex_data$date), cal = "gregorian")
+#' ci <- climdex.pcic::climdexInput.raw(
+#'  tmax = climdex_data$tmax, tmin = climdex_data$tmin, prec = climdex_data$precip,
+#'   tmax.dates = dates_pcic, tmin.dates = dates_pcic, prec.dates = dates_pcic,
+#'   base.range = c(1981, 1990), northern.hemisphere = TRUE
+#' )
+#' 
+#' all_indices <- c(
+#'   "fd", "su", "id", "tr", "wsdi", "csdi", "gsl", "txx", "txn", "tnx", "tnn",
+#'   "tn10p", "tx10p", "tn90p", "tx90p", "dtr", "rx1day", "rx5day", "sdii",
+#'   "r10mm", "r20mm", "rnnmm", "cdd", "cwd", "r95ptot", "r99ptot", "prcptot"
+#' )
+#' 
+#' # Annual frequency
+#' df_annual <- climdex_single_station(ci = ci, freq = "annual", indices = all_indices, year = "year")
+#' 
+#' #Monthly frequency subset
+#' df_monthly <- climdex_single_station(ci = ci, freq = "monthly", indices = c("txx", "tn10p", "dtr"), year = "year", month = "month")
 climdex_single_station <- function(ci, freq = "annual", indices, year, month,
                                    spells.can.span.years = FALSE, gsl.mode = "GSL",
                                    threshold = 1) {

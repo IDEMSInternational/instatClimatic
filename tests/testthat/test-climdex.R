@@ -294,7 +294,7 @@ test_that("climdex works with southern hemisphere and different base range", {
   indices <- c("gsl")
   
   out <- climdex(
-    data = data,
+    data = climdex_data,
     station = "station",
     date = "date",
     year = "year",
@@ -556,7 +556,7 @@ test_that("climdex.dtr returns expected vector", {
 test_that("climdex_single_station computes all indices with expected structure", {
   df <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
   dates_pcic <- PCICt::as.PCICt(as.character(df$date), cal = "gregorian")
-  ci <- climdex.pcic::climdexInput.raw(
+  ci <- climdexInput.raw(
     tmax = df$tmax, tmin = df$tmin, prec = df$precip,
     tmax.dates = dates_pcic, tmin.dates = dates_pcic, prec.dates = dates_pcic,
     base.range = c(1981, 1990), northern.hemisphere = TRUE

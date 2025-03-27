@@ -29,15 +29,45 @@
 #' @export
 #'
 #' @examples
-#' # data <- read.csv("climate_data.csv")
-#' # indices <- c("fd", "su", "id", "tr", "wsdi", "csdi", "gsl", "sdii",
-#' # "r10mm", "r20mm", "rnnmm", "cdd", "cwd", "r95ptot", "r99ptot", "prcptot")
-#' # climdex(data, station = "station_name", date = "date", year = "year",
-#' # month = "month", prec = "precipitation",
-#' #          tmax = "max_temperature",
-#' #          tmin = "min_temperature",
-#' #          indices = indices)
-
+#' # Example 1: Climdex indices return plausible values
+#' data(climdex_data)
+#' indices <- c("fd", "r10mm", "gsl", "cdd")
+#' 
+#' out <- climdex(
+#'   data = climdex_data,
+#'   date = "date",
+#'   year = "year",
+#'   month = "month",
+#'   prec = "precip",
+#'   tmax = "tmax",
+#'   tmin = "tmin",
+#'   indices = indices
+#' )
+#' 
+#' out$fd
+#' out$r10mm
+#' out$gsl
+#' out$cdd
+#'   
+#' # Example 2: Climdex works with southern hemisphere and different base range
+#'
+#' indices <- c("gsl")
+#' out <- climdex(
+#'   data = climdex_data,
+#'   station = "station",
+#'   date = "date",
+#'   year = "year",
+#'   month = "month",
+#'   prec = "precip",
+#'   tmax = "tmax",
+#'   tmin = "tmin",
+#'   indices = indices,
+#'   northern.hemisphere = FALSE,
+#'   base.range = c(1981, 1982)
+#' )
+#' 
+#' out
+#' 
 climdex <- function(data, station, date, year, month, prec, tmax, tmin, indices, freq = "annual",
                     base.range = c(1961, 1990), n = 5, northern.hemisphere = TRUE,
                     quantiles = NULL, temp.qtiles = c(0.1, 0.9), 

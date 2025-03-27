@@ -25,3 +25,31 @@
 #' @examples
 #' head(ghana)
 "ghana"
+
+#' Synthetic Climate Dataset
+#'
+#' A small synthetic dataset for testing climate index functions. It contains daily records from two imaginary weather stations over the years 1981 to 1983.
+#'
+#' The dataset includes daily maximum and minimum temperatures, precipitation, and metadata such as year and month for each observation. It is designed for use in unit tests and function examples in this package.
+#'
+#' @format A data frame with 2190 rows and 8 columns:
+#' \describe{
+#'   \item{station}{Station name (character). This is `"X001"`.}
+#'   \item{date}{Date (Date class) from 1981-01-01 to 1983-12-31.}
+#'   \item{year}{Year of observation (numeric), from `1981` to `1983`.}
+#'   \item{month}{Month of observation (numeric), `1` to `12`.}
+#'   \item{tmax}{Daily maximum temperature (numeric, in °C).}
+#'   \item{tmin}{Daily minimum temperature (numeric, in °C).}
+#'   \item{precip}{Daily precipitation (numeric, in mm).}
+#' }
+#'
+#' @details
+#' This synthetic dataset is not based on real climate data. It is created solely for testing and development of climate indices and is not intended for scientific analysis.
+#'
+#' @source Internally generated using `rnorm()` and `rexp()` functions in R.
+#'
+#' @examples
+#' head(climdex_data)
+#' table(climdex_data$station)
+#' summary(climdex_data$tmax)
+"climdex_data"
