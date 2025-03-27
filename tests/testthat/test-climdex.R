@@ -441,4 +441,112 @@ test_that("climdex handles gsl mode and spell threshold", {
   expect_true("cwd" %in% names(out))
 })
 
+################################################################################
+
+test_that("climdex precipitation-based indices run correctly", {
+  synthetic_climate <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
+  
+  # Create PCICt dates
+  dates <- PCICt::as.PCICt(as.character(synthetic_climate$date), cal = "gregorian")
+  
+  # Create climdexInput object
+  ci <- climdexInput.raw(
+    tmax = synthetic_climate$tmax,
+    tmin = synthetic_climate$tmin,
+    prec = synthetic_climate$precip,
+    tmax.dates = dates,
+    tmin.dates = dates,
+    prec.dates = dates,
+    base.range = c(1981, 1990)
+  )
+  
+  # Basic checks for each function
+  expect_type(climdex.rx1day(ci), "double")
+  expect_type(climdex.rx5day(ci), "double")
+  expect_type(climdex.sdii(ci), "double")
+  expect_type(climdex.r10mm(ci), "double")
+  expect_type(climdex.r20mm(ci), "double")
+  expect_type(climdex.rnnmm(ci, 15), "double")
+  expect_error(climdex.rnnmm(ci, c(1, 2))) # Invalid threshold input
+  expect_type(climdex.cdd(ci), "double")
+  expect_type(climdex.cwd(ci), "double")
+  expect_type(climdex.r95ptot(ci), "double")
+  expect_type(climdex.r99ptot(ci), "double")
+  expect_type(climdex.prcptot(ci), "double")
+  
+  # Test with exact dates
+  
+  
+  
+  expect_s3_class(climdex.rx1day(ci, freq = "annual", include.exact.dates = TRUE), "data.frame")
+  expect_s3_class(climdex.rx5day(ci, freq = "annual", include.exact.dates = TRUE), "data.frame")
+  expect_s3_class(climdex.cdd(ci, include.exact.dates = TRUE), "data.frame")
+  expect_s3_class(climdex.cwd(ci, include.exact.dates = TRUE), "data.frame")
+})
+
+dates <- as.PCICt(as.character(data$date), cal = "gregorian")
+
+ci <- climdexInput.raw(
+  tmin = data$tmin,
+  tmax = data$tmax,
+  tavg = data$tavg,
+  prec = data$precip,
+  tmin.dates = dates,
+  tmax.dates = dates,
+  tavg.dates = dates,
+  prec.dates = dates,
+  base.range = c(1981, 1982)
+)
+
+test_that("climdex.fd (frost days) returns numeric vector of correct length", {
+  result <- climdex.fd(ci)
+  expect_type(result, "double")
+  expect_equal(length(result), length(unique(format(ci@dates, "%Y"))))
+})
+
+test_that("climdex.su (summer days) returns numeric vector", {
+  result <- climdex.su(ci)
+  expect_type(result, "double")
+})
+
+test_that("climdex.tr (tropical nights) returns expected result", {
+  result <- climdex.tr(ci)
+  expect_type(result, "double")
+})
+
+test_that("climdex.id (icing days) returns expected result", {
+  result <- climdex.id(ci)
+  expect_type(result, "double")
+})
+
+test_that("climdex.tx90p and climdex.tn10p return numeric vectors", {
+  tx <- climdex.tx90p(ci)
+  tn <- climdex.tn10p(ci)
+  expect_type(tx, "double")
+  expect_type(tn, "double")
+})
+
+test_that("climdex.wsdi and climdex.csdi return numeric vectors", {
+  ws <- climdex.wsdi(ci)
+  cs <- climdex.csdi(ci)
+  expect_type(ws, "double")
+  expect_type(cs, "double")
+})
+test_that("climdex.gsl returns numeric vector with correct length", {
+  gsl <- climdex.gsl(ci)
+  expect_type(gsl, "double")
+  expect_equal(length(gsl), length(unique(format(ci@dates, "%Y"))))
+})
+
+test_that("climdex.gsl returns start/end dates when include.exact.dates = TRUE", {
+  gsl_df <- climdex.gsl(ci, include.exact.dates = TRUE)
+  expect_s3_class(gsl_df, "data.frame")
+  expect_true(all(c("start", "sl", "end") %in% names(gsl_df)))
+})
+
+test_that("climdex.dtr returns expected vector", {
+  dtr <- climdex.dtr(ci)
+  expect_type(dtr, "double")
+  expect_equal(length(dtr), 36)
+})
 

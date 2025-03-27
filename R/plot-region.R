@@ -50,10 +50,10 @@
 #' # lat <- read.csv("lat.csv")
 #' # product <- read.csv("product.csv")
 #' # time <- read.csv("time.csv")
-#' # plot.region(lon, lat, product, time)
+#' # plot_region(lon, lat, product, time)
 #'
 #' # Example usage with additional parameters
-#' # plot.region(lon, lat, product, time, time_point = as.Date("2002-01-01"),
+#' # plot_region(lon, lat, product, time, time_point = as.Date("2002-01-01"),
 #' #             add2title = "CM SAF, ", lonmin = -10, lonmax = 10, latmin = 35,
 #' #             latmax = 45, height = 800, width = 800, plot.ano = TRUE,
 #' #             set.col.breaks = TRUE, brk.set = seq(240,310,10),
@@ -66,7 +66,7 @@
 #' #             loc_lat = c(40, 42, 44), loc_name = c("Location A",
 #' #             "Location B", "Location C"), label_pos = 3,
 #' #             variable = "Precipitation", level = 2, CTY.type = 2)
-plot.region <- function(lon, lat, product, time, time_point = as.Date("2002-01-01"), add2title = "CM SAF, ", lonmin = NA, lonmax = NA, latmin = NA, latmax = NA, height = 600, width = 600, plot.ano = FALSE, set.col.breaks = FALSE, brk.set = seq(240,310,5), colmin0 = NA, colmax0 = NA, ncol = 14, plotHighRes = FALSE, plotCoastline = TRUE, plotCountries = TRUE, plotRivers = FALSE, contour.thick = 2, plotCities = TRUE, pch.cities = 2, cex.cities = 1, label.cities = TRUE, plotCapitals = 1, cex.label.cities = 0.5, dlat = 0.25, plotOwnLocations = FALSE, loc_lon = c(), loc_lat = c(), loc_name = c(""), label_pos = 1, variable = "Tm", level = 5, CTY.type = 4, ...) {
+plot_region <- function(lon, lat, product, time, time_point = as.Date("2002-01-01"), add2title = "CM SAF, ", lonmin = NA, lonmax = NA, latmin = NA, latmax = NA, height = 600, width = 600, plot.ano = FALSE, set.col.breaks = FALSE, brk.set = seq(240,310,5), colmin0 = NA, colmax0 = NA, ncol = 14, plotHighRes = FALSE, plotCoastline = TRUE, plotCountries = TRUE, plotRivers = FALSE, contour.thick = 2, plotCities = TRUE, pch.cities = 2, cex.cities = 1, label.cities = TRUE, plotCapitals = 1, cex.label.cities = 0.5, dlat = 0.25, plotOwnLocations = FALSE, loc_lon = c(), loc_lat = c(), loc_name = c(""), label_pos = 1, variable = "Tm", level = 5, CTY.type = 4, ...) {
   
   # Set the variable name
   #varname <- nc$var[[datalev]]$name
