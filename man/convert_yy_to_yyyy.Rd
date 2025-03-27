@@ -23,5 +23,4 @@ This function converts a two-digit year to a four-digit year based on a given ba
 years <- c(92, 98, 04, 88)
 converted_years <- convert_yy_to_yyyy(years, base = 1990)
 print(converted_years)
-# Output: 1992 1998 2004 1988
 }
