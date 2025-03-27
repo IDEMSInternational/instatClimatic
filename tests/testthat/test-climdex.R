@@ -484,6 +484,7 @@ test_that("climdex precipitation-based indices run correctly", {
   expect_s3_class(climdex.cwd(ci, include.exact.dates = TRUE), "data.frame")
 })
 
+data <- read.csv(testthat::test_path("test-data", "synthetic_climate.csv"))
 dates <- as.PCICt(as.character(data$date), cal = "gregorian")
 
 ci <- climdexInput.raw(
@@ -550,3 +551,4 @@ test_that("climdex.dtr returns expected vector", {
   expect_equal(length(dtr), 36)
 })
 
+################################################################################
