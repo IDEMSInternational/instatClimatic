@@ -42,13 +42,12 @@ A data frame containing climatic details such as start and end dates of missing 
 This function extracts climatic details from a given dataset based on specified parameters such as date, elements, stations, and level. It provides information about the duration and frequency of missing values for each element at different levels (day, month, year).
 }
 \examples{
-#climatic_details(data = climatic_data, 
-#                 date = "Date", 
-#                 elements = c("Temperature", "Precipitation"), 
-#                 stations = c("Station1", "Station2"), 
-#                 order = TRUE, 
-#                 day = TRUE, 
-#                 month = FALSE, 
-#                 year = TRUE, 
-#                 level = TRUE)
+data(ghana)
+
+climatic_details(data = ghana,
+                 date = date,
+                 stations = station,
+                 elements = c("rainfall", "min_temperature"),
+                 month = TRUE
+                 )
 }

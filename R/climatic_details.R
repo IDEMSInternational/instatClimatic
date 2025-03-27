@@ -18,16 +18,14 @@
 #' @export
 #'
 #' @examples
-#' #climatic_details(data = climatic_data, 
-#' #                 date = "Date", 
-#' #                 elements = c("Temperature", "Precipitation"), 
-#' #                 stations = c("Station1", "Station2"), 
-#' #                 order = TRUE, 
-#' #                 day = TRUE, 
-#' #                 month = FALSE, 
-#' #                 year = TRUE, 
-#' #                 level = TRUE)
-
+#' data(ghana)
+#' 
+#' climatic_details(data = ghana,
+#'                  date = date,
+#'                  stations = station,
+#'                  elements = c("rainfall", "min_temperature"),
+#'                  month = TRUE
+#'                  )
 climatic_details <- function(data, date, elements, stations,
                              order = TRUE,
                              day = FALSE,
@@ -148,8 +146,12 @@ climatic_details <- function(data, date, elements, stations,
     list_tables[[i]] <- detail.table.year
   }
   
-  detail.table.all <- plyr::ldply(list_tables, data.frame) %>%
-    dplyr::mutate(Level = instatExtras::make_factor(Level))
+  detail.table.all <- plyr::ldply(list_tables, data.frame)
+  
+  if ("Level" %in% names(detail.table.all)){
+    detail.table.all <- detail.table.all %>%
+      dplyr::mutate(Level = instatExtras::make_factor(Level))
+  }
   
   return(detail.table.all)
   
