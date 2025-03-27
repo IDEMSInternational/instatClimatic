@@ -33,7 +33,7 @@
 #' @examples
 #' data(climdex_data)
 #' dates_pcic <- PCICt::as.PCICt(as.character(climdex_data$date), cal = "gregorian")
-#' ci <- climdex.pcic::climdexInput.raw(
+#' ci <- climdexInput.raw(
 #'  tmax = climdex_data$tmax, tmin = climdex_data$tmin, prec = climdex_data$precip,
 #'   tmax.dates = dates_pcic, tmin.dates = dates_pcic, prec.dates = dates_pcic,
 #'   base.range = c(1981, 1990), northern.hemisphere = TRUE
