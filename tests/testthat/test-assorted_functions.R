@@ -29,3 +29,31 @@ test_that("convert_yy_to_yyyy correctly converts years based on base", {
 test_that("convert_yy_to_yyyy errors when base is missing", {
   expect_error(convert_yy_to_yyyy(98), "base year must be supplied")
 })
+
+test_that("spells handles typical sequences", {
+  expect_equal(spells(c(1, 1, 1, 0, 1, 1)), c(NA, NA, NA, 0, 1, 2))
+})
+
+test_that("spells resets after zero", {
+  expect_equal(spells(c(1, 0, 1)), c(NA, 0, 1))
+})
+
+test_that("spells works with custom initial value", {
+  expect_equal(spells(c(1, 1, 0, 1), initial_value = 10), c(11, 12, 0, 1))
+})
+
+test_that("spells handles all zeros", {
+  expect_equal(spells(c(0, 0, 0)), c(0, 0, 0))
+})
+
+test_that("spells handles leading zeros", {
+  expect_equal(spells(c(0, 1, 1)), c(0, 1, 2))
+})
+
+test_that("spells handles empty vector", {
+  expect_equal(spells(numeric(0)), numeric(0))
+})
+
+test_that("spells works with NA as initial value", {
+  expect_equal(spells(c(1, 1, 0, 1), initial_value = NA_real_), c(NA_real_, NA_real_ + 1, 0, 1))
+})
