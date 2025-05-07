@@ -78,7 +78,16 @@ climdex <- function(data, station, date, year, month, prec = NULL, tmax = NULL, 
   if (freq == "monthly" && missing(month)) stop("month is required for freq = 'monthly'.")
   
   # # Add check that all three of prec, tmin, tmax cannot be NULL
-  if (is.null(prec) &  is.null(tmax) & is.null(tmin)) stop("At least one of prec, tmax and tmin must be provided.")
+  if (is.null(prec) & is.null(tmax) & is.null(tmin)) stop("At least one of prec, tmax and tmin must be provided.")
+  if (is.null(prec)) {
+    prec <- if (!is.null(tmax)) tmax else tmin
+  }
+  if (is.null(tmax)) {
+    tmax <- if (!is.null(prec)) prec else tmin
+  }
+  if (is.null(tmin)) {
+    tmin <- if (!is.null(prec)) prec else tmax
+  }
   
   # All indices can be calculated annually. Only some have monthly versions as well.
   year_only_indices <- c("fd", "su", "id", "tr", "wsdi", "csdi", "gsl", "sdii", "r10mm", 
@@ -93,7 +102,7 @@ climdex <- function(data, station, date, year, month, prec = NULL, tmax = NULL, 
     df_list <- vector(mode = "list", length = length(stations))
     for (s in seq_along(stations)) {
       df_station <- data %>% dplyr::filter(.data[[station]] == stations[s])
-      ci <- climdexInput.raw(prec = df_station[[prec]], #tmax = df_station[[tmax]], tmin = df_station[[tmin]], 
+      ci <- climdexInput.raw(prec = df_station[[prec]], tmax = df_station[[tmax]], tmin = df_station[[tmin]], 
                              base.range = base.range, northern.hemisphere = northern.hemisphere, 
                              temp.qtiles = temp.qtiles, prec.qtiles = prec.qtiles, 
                              max.missing.days = max.missing.days,
