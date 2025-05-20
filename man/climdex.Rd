@@ -39,11 +39,11 @@ climdex(
 
 \item{month}{The name of the column in the data frame that represents the month.}
 
-\item{prec}{The name of the column in the data frame that represents precipitation.}
+\item{prec}{The name of the column in the data frame that represents precipitation (Default \code{NULL}).}
 
-\item{tmax}{The name of the column in the data frame that represents maximum temperature.}
+\item{tmax}{The name of the column in the data frame that represents maximum temperature (Default \code{NULL}).}
 
-\item{tmin}{The name of the column in the data frame that represents minimum temperature.}
+\item{tmin}{The name of the column in the data frame that represents minimum temperature (Default \code{NULL}).}
 
 \item{indices}{A character vector specifying the climate indices to be calculated.}
 
