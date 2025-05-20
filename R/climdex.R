@@ -71,7 +71,7 @@
 climdex <- function(data, station, date, year, month, prec = NULL, tmax = NULL, tmin = NULL, indices, freq = "annual",
                     base.range = c(1961, 1990), n = 5, northern.hemisphere = TRUE,
                     quantiles = NULL, temp.qtiles = c(0.1, 0.9), 
-                    prec.qtiles = c(0.95, 0.99), max.missing.days = c(annual = 15, monthly = 3), 
+                    prec.qtiles = c(0.95, 0.99), max.missing.days = c(annual = 15, monthly = 3, seasonal = 6), 
                     min.base.data.fraction.present = 0.1, spells.can.span.years = FALSE,
                     gsl.mode = "GSL", threshold = 1) {
   stopifnot(freq %in% c("annual", "monthly"))
@@ -102,28 +102,29 @@ climdex <- function(data, station, date, year, month, prec = NULL, tmax = NULL, 
     df_list <- vector(mode = "list", length = length(stations))
     for (s in seq_along(stations)) {
       df_station <- data %>% dplyr::filter(.data[[station]] == stations[s])
-      ci <- climdexInput.raw(prec = df_station[[prec]], tmax = df_station[[tmax]], tmin = df_station[[tmin]], 
-                             base.range = base.range, northern.hemisphere = northern.hemisphere, 
-                             temp.qtiles = temp.qtiles, prec.qtiles = prec.qtiles, 
-                             max.missing.days = max.missing.days,
-                             min.base.data.fraction.present = min.base.data.fraction.present,
-                             tmax.dates = PCICt::as.PCICt(x = as.character(df_station[[date]]), cal="gregorian"),
-                             tmin.dates = PCICt::as.PCICt(x = as.character(df_station[[date]]), cal="gregorian"),
-                             prec.dates = PCICt::as.PCICt(x = as.character(df_station[[date]]), cal="gregorian"))
+      ci <- climdex.pcic::climdexInput.raw(prec = df_station[[prec]], tmax = df_station[[tmax]], tmin = df_station[[tmin]], 
+                                           base.range = base.range, northern.hemisphere = northern.hemisphere, 
+                                           temp.qtiles = temp.qtiles, prec.qtiles = prec.qtiles, 
+                                           max.missing.days = max.missing.days,
+                                           min.base.data.fraction.present = min.base.data.fraction.present,
+                                           tmax.dates = PCICt::as.PCICt(x = as.character(df_station[[date]]), cal="gregorian"),
+                                           tmin.dates = PCICt::as.PCICt(x = as.character(df_station[[date]]), cal="gregorian"),
+                                           prec.dates = PCICt::as.PCICt(x = as.character(df_station[[date]]), cal="gregorian"))
       df_list[[stations[s]]] <- climdex_single_station(ci = ci, freq = freq, indices = indices, year = year, month = month,
                                                        spells.can.span.years = spells.can.span.years, gsl.mode = gsl.mode,
                                                        threshold = threshold)
     }
     df_out <- dplyr::bind_rows(df_list, .id = station)
-  } else {
-    ci <- climdexInput.raw(prec = data[[prec]], tmax = data[[tmax]], tmin = data[[tmin]], 
-                           base.range = c(1961, 1990), northern.hemisphere = TRUE, 
-                           temp.qtiles = c(0.1, 0.9), prec.qtiles = c(0.95, 0.99), 
-                           max.missing.days = c(annual = 15, monthly = 3), 
-                           min.base.data.fraction.present=0.1, 
-                           tmax.dates = PCICt::as.PCICt(x = as.character(data[[date]]), cal="gregorian"), 
-                           tmin.dates = PCICt::as.PCICt(x = as.character(data[[date]]), cal="gregorian"), 
-                           prec.dates = PCICt::as.PCICt(x = as.character(data[[date]]), cal="gregorian"))
+  }
+  else {
+    ci <- climdex.pcic::climdexInput.raw(prec = data[[prec]], tmax = data[[tmax]], tmin = data[[tmin]], 
+                                         base.range = c(1961, 1990), northern.hemisphere = TRUE, 
+                                         temp.qtiles = c(0.1, 0.9), prec.qtiles = c(0.95, 0.99), 
+                                         max.missing.days = c(annual = 15, monthly = 3, seasonal = 6), 
+                                         min.base.data.fraction.present=0.1, 
+                                         tmax.dates = PCICt::as.PCICt(x = as.character(data[[date]]), cal="gregorian"), 
+                                         tmin.dates = PCICt::as.PCICt(x = as.character(data[[date]]), cal="gregorian"), 
+                                         prec.dates = PCICt::as.PCICt(x = as.character(data[[date]]), cal="gregorian"))
     df_out <- climdex_single_station(ci = ci, freq = freq, indices = indices, year = year, month = month, gsl.mode = gsl.mode)
   }
   # Make the type of the year/month column(s) the same in the output as in data.
