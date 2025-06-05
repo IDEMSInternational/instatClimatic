@@ -68,13 +68,19 @@
 #' 
 #' out
 #' 
-climdex <- function(data, station, date, year, month, prec = NULL, tmax = NULL, tmin = NULL, indices, freq = "annual",
+climdex <- function(data, station, date, year = NULL, month, prec = NULL, tmax = NULL, tmin = NULL, indices, freq = "annual",
                     base.range = c(1961, 1990), n = 5, northern.hemisphere = TRUE,
                     quantiles = NULL, temp.qtiles = c(0.1, 0.9), 
                     prec.qtiles = c(0.95, 0.99), max.missing.days = c(annual = 15, monthly = 3, seasonal = 6), 
                     min.base.data.fraction.present = 0.1, spells.can.span.years = FALSE,
                     gsl.mode = "GSL", threshold = 1) {
-  stopifnot(freq %in% c("annual", "monthly"))
+  stopifnot(freq %in% c("annual", "monthly", "seasonal"))
+
+  if (is.null(year)){
+    year <- "year"
+    data[[year]] <- lubridate::year(data[[date]])
+  }
+  
   if (freq == "monthly" && missing(month)) stop("month is required for freq = 'monthly'.")
   
   # # Add check that all three of prec, tmin, tmax cannot be NULL
