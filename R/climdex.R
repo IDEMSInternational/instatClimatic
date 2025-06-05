@@ -77,17 +77,24 @@ climdex <- function(data, station, date, year, month, prec = NULL, tmax = NULL, 
   stopifnot(freq %in% c("annual", "monthly"))
   if (freq == "monthly" && missing(month)) stop("month is required for freq = 'monthly'.")
   
-  # # Add check that all three of prec, tmin, tmax cannot be NULL
-  if (is.null(prec) & is.null(tmax) & is.null(tmin)) stop("At least one of prec, tmax and tmin must be provided.")
-  if (is.null(prec)) {
-    prec <- if (!is.null(tmax)) tmax else tmin
+  # --- Helper: Safely rebuild dates with shifted year
+  shift_date_year <- function(date, new_year) {
+    m <- lubridate::month(date)
+    d <- lubridate::day(date)
+    y <- as.integer(new_year)
+    as.Date(ISOdate(y, m, d))  # returns NA for invalid dates
   }
-  if (is.null(tmax)) {
-    tmax <- if (!is.null(prec)) prec else tmin
-  }
-  if (is.null(tmin)) {
-    tmin <- if (!is.null(prec)) prec else tmax
-  }
+  
+  # --- Rebuild date using shifted year (if provided)
+  date <- "date"  # hardcoded for modified column
+  data[[date]] <- shift_date_year(data[[date]], data[[year]])
+  
+  # --- Check at least one climate variable provided
+  if (is.null(prec) & is.null(tmax) & is.null(tmin))
+    stop("At least one of prec, tmax and tmin must be provided.")
+  if (is.null(prec)) prec <- if (!is.null(tmax)) tmax else tmin
+  if (is.null(tmax)) tmax <- if (!is.null(prec)) prec else tmin
+  if (is.null(tmin)) tmin <- if (!is.null(prec)) prec else tmax
   
   # All indices can be calculated annually. Only some have monthly versions as well.
   year_only_indices <- c("fd", "su", "id", "tr", "wsdi", "csdi", "gsl", "sdii", "r10mm", 
