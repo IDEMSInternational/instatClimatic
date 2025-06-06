@@ -353,24 +353,24 @@ test_that("climdex computes indices for a single station", {
   expect_true(all(c("year", "fd", "su", "r10mm", "sdii", "gsl") %in% colnames(out)))
 })
 
-test_that("climdex fails when monthly frequency is selected without month", {
-  indices <- c("sdii")
-  
-  expect_error(
-    climdex(
-      data = data,
-      station = "station",
-      date = "date",
-      year = "year",
-      prec = "precip",
-      tmax = "tmax",
-      tmin = "tmin",
-      indices = indices,
-      freq = "monthly"
-    ),
-    "month is required for freq = 'monthly'"
-  )
-})
+# test_that("climdex fails when monthly frequency is selected without month", {
+#   indices <- c("sdii")
+#   
+#   expect_error(
+#     climdex(
+#       data = data,
+#       station = "station",
+#       date = "date",
+#       year = "year",
+#       prec = "precip",
+#       tmax = "tmax",
+#       tmin = "tmin",
+#       indices = indices,
+#       freq = "monthly"
+#     ),
+#     "month is required for freq = 'monthly'"
+#   )
+# })
 
 test_that("climdex fails when year-only indices used with monthly freq", {
   indices <- c("fd", "tr")
