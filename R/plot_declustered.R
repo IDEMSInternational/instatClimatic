@@ -37,7 +37,10 @@ plot_declustered <- function(data, station_col_name, element_col_name, threshold
     for (i in seq_along(stations)) {
       station <- stations[i]
       d <- data[station_col == station, ]
+      # bug fix: evmReal is not loading properly in texmex
+      evmReal <- texmex::evmReal
       obj <- texmex::declust(y = stats::na.exclude(d[, element_col_name]), r = r, threshold = threshold)
+      rm(evmReal)
       if (print_summary) {
         cat("Station:", paste0("", station, ""), "\n \n")
         cat("Threshold", obj$threshold, "\n")
@@ -52,9 +55,11 @@ plot_declustered <- function(data, station_col_name, element_col_name, threshold
     if (!print_summary) {
       patchwork::wrap_plots(plts, ncol = ncol)
     }
-  }
-  else {
+  } else {
+    # bug fix: evmReal is not loading properly in texmex
+    evmReal <- texmex::evmReal
     obj <- texmex::declust(y = stats::na.exclude(data[, element_col_name]), r = r, threshold = threshold)
+    rm(evmReal)
     if (print_summary) {
       cat("Threshold", obj$threshold, "\n")
       cat("Declustering using the intervals method, run length", obj$r, "\n")
