@@ -23,6 +23,10 @@ climatic_missing <- function(data, date, elements, stations,
   if (missing(elements)){
     stop('argument "elements" is missing, with no default')
   }
+  # arrange data
+  data <- data %>%
+    dplyr::arrange({{ stations }}, {{ date }})
+  
   # stack data
   data.stack <- data %>%
     tidyr::pivot_longer(cols = c({{ elements }}),
