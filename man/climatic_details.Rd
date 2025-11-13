@@ -13,7 +13,8 @@ climatic_details(
   day = FALSE,
   month = TRUE,
   year = FALSE,
-  level = FALSE
+  level = FALSE,
+  duplicates = c("distinct", "flag", "keep", "hierarchical")
 )
 }
 \arguments{
@@ -34,12 +35,60 @@ climatic_details(
 \item{year}{A logical value indicating whether to include information at the year level.}
 
 \item{level}{A logical value indicating whether to include the level information in the output.}
+
+\item{duplicates}{How to handle duplicated or overlapping missing spells
+across different temporal levels (day, month, year). A "duplicate"
+in the strict sense is a spell with the same station, element, start
+date (\code{From}) and end date (\code{To}) that appears at more
+than one level. Options are:
+\itemize{
+\item \code{"distinct"} (default): Keep only the highest-level spell in
+each exact-duplicate group (Year > Month > Day). The number of
+omitted rows is reported as a message.
+\item \code{"flag"}: Keep all rows and add a \code{duplicate_index}
+column. The first occurrence in each exact-duplicate group has
+\code{duplicate_index = 1}, later duplicates have values
+\code{> 1}. A message reports how many rows were flagged as
+duplicates.
+\item \code{"keep"}: Keep all rows and do not add any duplicate
+index or message.
+\item \code{"hierarchical"}: Decompose overlapping spells so that each
+date is represented only once, at the highest available level
+(Year > Month > Day). For example, a long daily spell that
+contains whole missing months and years is split into:
+full years (Year), remaining full months (Month), and remaining
+individual days (Day). A message reports how many original rows
+were omitted due to this compression.
+}}
 }
 \value{
 A data frame containing climatic details such as start and end dates of missing values and the count of missing values for each element at the specified levels.
 }
 \description{
 This function extracts climatic details from a given dataset based on specified parameters such as date, elements, stations, and level. It provides information about the duration and frequency of missing values for each element at different levels (day, month, year).
+}
+\details{
+When multiple temporal levels are requested (e.g., \code{day = TRUE},
+\code{month = TRUE}, \code{year = TRUE}), the same missing spell can
+appear at several levels. For example, if an entire year is missing,
+the corresponding spell may appear as one daily spell, one monthly spell
+and one yearly spell with identical \code{From} and \code{To} dates.
+
+The \code{duplicates} argument controls how such overlaps are handled.
+By default (\code{duplicates = "distinct"}), only the highest-level spell
+(Year > Month > Day) is kept for exact duplicates and the number of
+omitted rows is reported in a message. Using \code{duplicates = "flag"}
+retains all rows and adds a \code{duplicate_index} column so that users
+can filter or summarise duplicates as needed. Setting
+\code{duplicates = "keep"} disables this behaviour and returns all
+spells unchanged.
+
+The option \code{duplicates = "hierarchical"} performs a finer-grained
+compression: overlapping spells at different levels are decomposed so
+that each date is only counted once, at the highest level available
+(Year > Month > Day). For example, if a long daily spell contains
+several full years and months of missing data, the result is split into
+separate Year, Month and Day spells covering those periods.
 }
 \examples{
 data(ghana)

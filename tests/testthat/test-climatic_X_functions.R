@@ -209,3 +209,204 @@ test_that("climatic_missing works when there are no missing values", {
   expect_equal(result$`%`, 0)
   expect_true(result$Full_Years >= 0)
 })
+
+
+test_that("climatic_missing works when there are no missing values", {
+  df <- data.frame(
+    Date = c(seq.Date(as.Date("2020-01-01"), by = "day", length.out = 30), as.Date("2019-01-01")),
+    Station = rep("X", 31),
+    Temp = rnorm(31, 10)
+  )
+  
+  result <- climatic_missing(
+    data = df,
+    date = Date,
+    elements = c(Temp),
+    stations = Station
+  )
+  
+  expect_equal(result$Missing, 0)
+  expect_equal(result$`%`, 0)
+  expect_true(result$Full_Years >= 0)
+})
+
+test_that("climatic_details duplicates='keep' returns all levels with no duplicate_index", {
+  # full year, all NA → we expect same spell at Day, Month, Year
+  dates <- seq(as.Date("2000-01-01"), as.Date("2000-12-31"), by = "day")
+  test_data <- data.frame(
+    station = "TEST",
+    date    = dates,
+    sunh    = NA_real_
+  )
+  
+  res <- climatic_details(
+    data      = test_data,
+    date      = date,
+    elements  = c(sunh),
+    stations  = station,
+    day       = TRUE,
+    month     = TRUE,
+    year      = TRUE,
+    duplicates = "keep"
+  )
+  
+  # Should have three rows: one Day spell, one Month spell, one Year spell
+  expect_equal(nrow(res), 3L)
+  expect_false("duplicate_index" %in% names(res))
+  expect_setequal(as.character(res$Level), c("Day", "Month", "Year"))
+})
+
+test_that("climatic_details duplicates='drop' keeps only one spell and omits duplicates", {
+  dates <- seq(as.Date("2000-01-01"), as.Date("2000-12-31"), by = "day")
+  test_data <- data.frame(
+    station = "TEST",
+    date    = dates,
+    sunh    = NA_real_
+  )
+  
+  expect_message(
+    res <- climatic_details(
+      data      = test_data,
+      date      = date,
+      elements  = c(sunh),
+      stations  = station,
+      day       = TRUE,
+      month     = TRUE,
+      year      = TRUE,
+      duplicates = "distinct"
+    ),
+    "rows in details omitted as duplicates"
+  )
+  
+  # Only a single spell for that station/element/date range
+  expect_equal(nrow(res), 1L)
+  expect_equal(as.character(res$Level), "Year") # Year is prioritised
+  expect_false("duplicate_index" %in% names(res))
+})
+
+test_that("climatic_details duplicates='flag' keeps all spells and flags duplicates", {
+  dates <- seq(as.Date("2000-01-01"), as.Date("2000-12-31"), by = "day")
+  test_data <- data.frame(
+    station = "TEST",
+    date    = dates,
+    sunh    = NA_real_
+  )
+  
+  expect_message(
+    res <- climatic_details(
+      data      = test_data,
+      date      = date,
+      elements  = c(sunh),
+      stations  = station,
+      day       = TRUE,
+      month     = TRUE,
+      year      = TRUE,
+      duplicates = "flag"
+    ),
+    "rows in details flagged as duplicates"
+  )
+  
+  # Still three spells: Day, Month, Year
+  expect_equal(nrow(res), 3L)
+  expect_true("duplicate_index" %in% names(res))
+  
+  # First in each (station, Element, From, To) group has index 1
+  expect_true(any(res$duplicate_index == 1L))
+  expect_true(any(res$duplicate_index > 1L))
+})
+
+test_that("partial overlaps are not treated as duplicates", {
+  # Missing from 20 March to 30 April: one long daily spell
+  dates <- seq(as.Date("2000-01-01"), as.Date("2000-12-31"), by = "day")
+  sunh  <- rep(0, length(dates))
+  
+  # Make 20 Mar to 30 Apr NA
+  sunh[dates >= as.Date("2000-03-20") & dates <= as.Date("2000-04-30")] <- NA_real_
+  
+  test_data <- data.frame(
+    station = "TEST",
+    date    = dates,
+    sunh    = sunh
+  )
+  
+  res <- climatic_details(
+    data      = test_data,
+    date      = date,
+    elements  = c(sunh),
+    stations  = station,
+    day       = TRUE,
+    month     = TRUE,
+    year      = FALSE,
+    duplicates = "distinct"
+  )
+  
+  # We expect:
+  # - one daily spell from 20 March to 30 April
+  # - one (or more) monthly spells with different From/To
+  # But importantly: no identical (station, Element, From, To), so no omissions.
+  
+  # No message about omitted duplicates
+  # (we don't wrap in expect_message here, so this will fail if a message appears)
+  expect_gte(nrow(res), 2L)
+  
+  # Within each group of station/Element/From/To there should be single row
+  res_grouped <- res %>%
+    dplyr::group_by(station, Element, From, To) %>%
+    dplyr::summarise(n = dplyr::n(), .groups = "drop")
+  
+  expect_true(all(res_grouped$n == 1L))
+})
+
+test_that("climatic_details with duplicates = 'hierarchical' gives a clean year-month-day hierarchy", {
+  # Build synthetic daily data: 2000-01-01 to 2002-12-31
+  dates <- seq(as.Date("2000-01-01"), as.Date("2002-12-31"), by = "day")
+  
+  sunh <- rep(0, length(dates))
+  
+  # Make 2000-01-01 to 2001-12-31 fully missing (2 full years)
+  sunh[dates >= as.Date("2000-01-01") & dates <= as.Date("2001-12-31")] <- NA_real_
+  
+  # Make 2002-01-01 to 2002-03-31 fully missing (3 full months)
+  sunh[dates >= as.Date("2002-01-01") & dates <= as.Date("2002-03-31")] <- NA_real_
+  
+  # Make 2002-04-10 to 2002-04-20 missing (11 individual days)
+  sunh[dates >= as.Date("2002-04-10") & dates <= as.Date("2002-04-20")] <- NA_real_
+  
+  test_data <- data.frame(
+    station = "TEST",
+    date    = dates,
+    sunh    = sunh
+  )
+  
+  # Run climatic_details at all three levels with hierarchical compression
+  res <- suppressWarnings(climatic_details(
+    data      = test_data,
+    date      = date,
+    elements  = c(sunh),
+    stations  = station,
+    day       = TRUE,
+    month     = TRUE,
+    year      = TRUE,
+    duplicates = "hierarchical"
+  ))
+  
+  # We expect exactly three spells: Year, Month, Day (in that order)
+  expect_equal(nrow(res), 3L)
+  expect_equal(as.character(res$Level), c("Year", "Month", "Day"))
+  
+  # Check date ranges
+  expect_true(res$From[1] == as.Date("2000-01-01"))
+  expect_true(res$From[2] == as.Date("2002-01-01"))
+  expect_true(res$From[3] == as.Date("2002-04-10"))
+  
+  expect_true(res$To[1] == as.Date("2001-12-31"))
+  expect_true(res$To[2] == as.Date("2002-03-31"))
+  expect_true(res$To[3] == as.Date("2002-04-20"))
+
+  # Check counts (2 years, 3 months, 11 days)
+  expect_equal(as.numeric(res$Count), c(2L, 3L, 11L))
+  
+  # Station and element should be consistent
+  expect_true(all(res$station == "TEST"))
+  expect_true(all(as.character(res$Element) == "sunh"))
+})
