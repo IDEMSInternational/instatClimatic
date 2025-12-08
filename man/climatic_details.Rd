@@ -99,4 +99,13 @@ climatic_details(data = ghana,
                  elements = c("rainfall", "min_temperature"),
                  month = TRUE
                  )
+climatic_details(data = ghana,
+                 date = date,
+                 stations = station,
+                 elements = c("min_temperature"),
+                 day = TRUE,
+                 month = TRUE,
+                 year = TRUE,
+                 duplicates = "hierarchical"
+                 )
 }

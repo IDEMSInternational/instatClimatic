@@ -404,7 +404,7 @@ test_that("climatic_details with duplicates = 'hierarchical' gives a clean year-
   expect_true(res$To[3] == as.Date("2002-04-20"))
 
   # Check counts (2 years, 3 months, 11 days)
-  expect_equal(as.numeric(res$Count), c(2L, 3L, 11L))
+  expect_equal(as.numeric(res$Countr), c(2L, 3L, 11L))
   
   # Station and element should be consistent
   expect_true(all(res$station == "TEST"))

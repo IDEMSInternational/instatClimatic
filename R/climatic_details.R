@@ -73,6 +73,15 @@
 #'                  elements = c("rainfall", "min_temperature"),
 #'                  month = TRUE
 #'                  )
+#' climatic_details(data = ghana,
+#'                  date = date,
+#'                  stations = station,
+#'                  elements = c("min_temperature"),
+#'                  day = TRUE,
+#'                  month = TRUE,
+#'                  year = TRUE,
+#'                  duplicates = "hierarchical"
+#'                  )
 climatic_details <- function(data, date, elements, stations,
                              order = TRUE,
                              day = FALSE,
@@ -256,6 +265,9 @@ climatic_details <- function(data, date, elements, stations,
     
     n_after   <- nrow(detail.table.all)
     n_omitted <- n_before - n_after
+    
+    # rename Count to be Countr
+    detail.table.all <- dplyr::rename(detail.table.all, Countr = Count)
     
     if (n_omitted > 0) {
       message(n_omitted, " rows in details omitted as overlaps (hierarchy Year > Month > Day)")
