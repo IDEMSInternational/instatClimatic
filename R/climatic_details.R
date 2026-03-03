@@ -337,12 +337,12 @@ climatic_details <- function(data, date, elements, stations,
   
   # Map LevelCode back to Level
   lev_levels <- levels(df$Level)
-  code_to_level <- function(x) dplyr::case_when(
-    x == 3L ~ "Year",
-    x == 2L ~ "Month",
-    x == 1L ~ "Day",
-    TRUE    ~ NA_character_
-  )
+  code_to_level <- function(x) {
+    x <- as.vector(x)
+    lookup_codes   <- c(1L,   2L,     3L)
+    lookup_labels  <- c("Day","Month","Year")
+    lookup_labels[match(x, lookup_codes)]
+  }
   res$Level <- factor(code_to_level(res$LevelCode), levels = lev_levels)
   
   # Count in correct units
